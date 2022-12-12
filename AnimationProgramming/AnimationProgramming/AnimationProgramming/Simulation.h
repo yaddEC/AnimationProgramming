@@ -9,7 +9,7 @@ public:
 	virtual ~ISimulation() {}
 
 	virtual void Init() {}
-	virtual void Update( float frameTime ){}
+	virtual void Update(float frameTime) {}
 };
 
 

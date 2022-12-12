@@ -791,10 +791,10 @@ Quaternion Quaternion::operator-(const Quaternion& q) {
 }
 
 
-void Quaternion::operator*=(const Quaternion& q) {
+/*void Quaternion::operator*=(const Quaternion& q) {
 
     (*this) = multiply(q);
-}
+}*/
 
 Quaternion Quaternion::operator*(const Quaternion& q) {
 

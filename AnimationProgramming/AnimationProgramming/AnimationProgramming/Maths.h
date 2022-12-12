@@ -251,7 +251,7 @@ public:
 
     Quaternion operator*(const Quaternion& q);
 
-    Quaternion multiply(const Quaternion& q);
+    //Quaternion multiply(const Quaternion& q);
 
     Quaternion operator*(const Vector3D& uValue);
 
