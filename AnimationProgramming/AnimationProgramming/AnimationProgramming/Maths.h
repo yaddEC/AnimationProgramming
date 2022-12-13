@@ -4,162 +4,168 @@
 #define M_PI       3.14159265358979323846
 
 
-class Vector2D
+namespace Math
 {
-public:
-    union
+    class Vector2D
     {
-        struct
+    public:
+        union
         {
-            float x;
-            float y;
+            struct
+            {
+                float x;
+                float y;
+            };
+            float xy[2];
         };
-        float xy[2];
+
+        Vector2D();
+        Vector2D(float a, float b);
+        ~Vector2D() {}
+
+        float GetMagnitude() const;
+        float Dot(const Vector2D vec2);
+
+        void Normalize();
+
+        Vector2D operator+(const Vector2D& vec2);
+        Vector2D operator-(const Vector2D& vec2);
+        Vector2D operator*(const Vector2D& vec2);
+        Vector2D operator*(const float& a);
+        Vector2D operator/(const float& a);
     };
 
-    Vector2D() {}
-    Vector2D(float a, float b);
-    ~Vector2D() {}
-
-    float GetMagnitude() const;
-    float dot(const Vector2D vec2);
-    void Normalize();
-
-
-    Vector2D operator+(const Vector2D& vec2);
-    Vector2D operator-(const Vector2D& vec2);
-    Vector2D operator*(const Vector2D& vec2);
-    Vector2D operator*(const float& a);
-    Vector2D operator/(const float& a);
-};
-
-class Vector3D
-{
-public:
-    union
+    class Vector3D
     {
-        struct
+    public:
+        union
         {
-            float x;
-            float y;
-            float z;
+            struct
+            {
+                float x;
+                float y;
+                float z;
+            };
+            float xyz[3];
         };
-        float xyz[3];
+
+        Vector3D();
+        Vector3D(float a, float b, float c);
+        ~Vector3D() {}
+
+        float GetMagnitude() const;
+        float Dot(const Vector3D vec3);
+
+        void Normalize();
+
+        Vector3D CrossProduct(const Vector3D vec3);
+
+        Vector3D operator+(const Vector3D& vec3);
+        Vector3D operator-(const Vector3D& vec3);
+        Vector3D operator*(const Vector3D& vec3);
+        Vector3D operator*(const float& a);
+        Vector3D operator/(const float& a);
     };
 
-
-    Vector3D() {}
-    Vector3D(float a, float b, float c);
-    ~Vector3D() {}
-
-    float GetMagnitude() const;
-    float Dot(const Vector3D vec3);
-    Vector3D CrossProduct(const Vector3D vec3);
-    void Normalize();
-
-
-    Vector3D operator+(const Vector3D& vec3);
-    Vector3D operator-(const Vector3D& vec3);
-    Vector3D operator*(const Vector3D& vec3);
-    Vector3D operator*(const float& a);
-    Vector3D operator/(const float& a);
-};
-Vector3D getSphericalCoords(const float r, const float theta, const float phi);
-Vector3D FindVecNormal(Vector3D v0, Vector3D v1, Vector3D v2);
-
-
-class Vector4D
-{
-public:
-    union
+    class Vector4D
     {
-        struct
+    public:
+        union
         {
-            float x;
-            float y;
-            float z;
-            float w;
+            struct
+            {
+                float x;
+                float y;
+                float z;
+                float w;
+            };
+            float xyz[4];
         };
-        float xyz[4];
+
+        Vector4D();
+        Vector4D(float a, float b, float c, float d);
+        Vector4D(const Vector3D& vec3, float _w = 1.0f);
+        ~Vector4D() {}
+
+        float GetMagnitude() const;
+
+        void Homogenize();
+        void Normalize();
+
+        Vector4D CrossProduct(const Vector3D vec4);
+
+        Vector4D operator+(const Vector4D& vec4);
+        Vector4D operator*(const Vector4D& vec4);
+        Vector4D operator*(const float& a);
     };
 
-    Vector4D() {}
-    Vector4D(float a, float b, float c, float d);
-    Vector4D(const Vector3D& vec3, float _w = 1.0f);
-    ~Vector4D() {}
-
-    void Homogenize();
-    Vector4D CrossProduct(const Vector3D vec4);
-    float GetMagnitude() const;
-    void Normalize();
-
-    Vector4D operator+(const Vector4D& vec4);
-    Vector4D operator*(const Vector4D& vec4);
-    Vector4D operator*(const float& a);
-};
-
-class Matrix3
-{
-public:
-    union
+    class Matrix3
     {
-        struct
+    public:
+        union
         {
-            float matrixTab3[3][3];
+            struct
+            {
+                float matrixTab3[3][3];
+            };
+            Vector3D Matrix3V[3];
+            float matrixTab9[9];
         };
-        Vector3D Matrix3V[3];
-        float matrixTab9[9];
+
+        Matrix3();
+        Matrix3(const float a[3][3]);
+        ~Matrix3() {}
+
+        Matrix3 GetTransposeMat3();
+        Matrix3 GetAdjugateMat3();
+        Matrix3 GetInvertibleMat3();
+
+        Matrix3 operator*(const Matrix3& mat1);
+        Vector3D operator*(const Vector3D& vec1);
     };
 
-    Matrix3();
-    Matrix3(const float a[3][3]);
-    ~Matrix3() {}
-
-    Matrix3 operator*(const Matrix3& mat1);
-    Vector3D operator*(const Vector3D& vec1);
-    Matrix3 GetInvertibleMat3();
-    Matrix3 GetTransposeMat3();
-    Matrix3 GetAdjugateMat3();
-};
-
-class Matrix4
-{
-public:
-
-
-    union
+    class Matrix4
     {
-        struct
+    public:
+
+
+        union
         {
-            float matrixTab4[4][4];
+            struct
+            {
+                float matrixTab4[4][4];
+            };
+            Vector4D Matrix4V[4];
+            float matrixTab16[16];
         };
-        Vector4D Matrix4V[4];
-        float matrixTab16[16];
+
+
+
+        Matrix4();
+        Matrix4(const float a[4][4]);
+        ~Matrix4() {}
+
+
+        Matrix4 GetTransposeMat4();
+
+        static Matrix4 CreateTransformMatrix(const Vector3D& rotation, const Vector3D& position, const Vector3D& scale);
+        static Matrix4 CreateTranslationMatrix(const Vector3D& translation);
+        static Matrix4 CreateScaleMatrix(const Vector3D& scale);
+        static Matrix4 CreateXRotationMatrix(float angle);
+        static Matrix4 CreateYRotationMatrix(float angle);
+        static Matrix4 CreateZRotationMatrix(float angle);
+
+        Matrix4 GetAdjugateMat4();
+        Matrix4 GetInvertibleMat4();
+        Matrix4 GetProjection(const float& fov, const float& n, const float& f);
+        Matrix4 GetViewMatrix();
+
+        Matrix4 operator*(const Matrix4& mat1);
+        Vector4D operator*(const Vector4D& vec1);
     };
+}
 
-
-
-    Matrix4();
-    Matrix4(const float a[4][4]);
-    ~Matrix4() {}
-
-
-    Matrix4 GetTransposeMat4();
-
-    static Matrix4 CreateTransformMatrix(const Vector3D& rotation, const Vector3D& position, const Vector3D& scale);
-    static Matrix4 CreateTranslationMatrix(const Vector3D& translation);
-    static Matrix4 CreateScaleMatrix(const Vector3D& scale);
-    static Matrix4 CreateXRotationMatrix(float angle);
-    static Matrix4 CreateYRotationMatrix(float angle);
-    static Matrix4 CreateZRotationMatrix(float angle);
-    Matrix4 GetInvertibleMat4();
-    Matrix4 GetAdjugateMat4();
-    Matrix4 GetProjection(const float& fov, const float& n, const float& f);
-    Matrix4 GetViewMatrix();
-
-    Matrix4 operator*(const Matrix4& mat1);
-    Vector4D operator*(const Vector4D& vec1);
-};
+using namespace Math;
 
 inline Matrix3 identity3x3()
 {

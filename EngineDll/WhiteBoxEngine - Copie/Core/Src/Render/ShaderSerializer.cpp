@@ -23,7 +23,6 @@ IResource*	CShaderSerializer::Load( CDataStream& dataStream, const CResourceDesc
 	return new CShader( shaderType, nullptr );
 #else
 	void* pShaderId = gVars->pRenderer->CreateShader( (char const*)dataStream.GetCursorData(), shaderType );
-	
 	String errorMessage;
 	if ( !gVars->pRenderer->CompileShader( pShaderId, errorMessage ) )
 	{ 

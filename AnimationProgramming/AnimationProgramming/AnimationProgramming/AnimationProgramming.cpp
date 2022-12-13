@@ -6,10 +6,12 @@
 #include "Maths.h"
 #include "Engine.h"
 #include "Simulation.h"
+#include "Keyframe.h"
 
 class CSimulation : public ISimulation
 {
 	Skeleton spookyScary;
+	Animation anim;
 	virtual void Init() override
 	{
 		
@@ -25,6 +27,21 @@ class CSimulation : public ISimulation
 		printf("Spine parent bone : %s\n", spineParentName);
 		printf("Anim key count : %ld\n", keyCount);
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
+
+		Keyframe keyframe1;
+		keyframe1.setPosition(Vector3D(posX, posY, posZ));
+		keyframe1.setRotation(Quaternion(quatW, Vector3D(quatX, quatY, quatZ)));
+		anim.addKeyframe(keyframe1);
+
+
+		Keyframe keyframe2;
+		keyframe2.setPosition(Vector3D(10, 500, 10));
+		keyframe2.setRotation(Quaternion(0, Vector3D(0, 1, 0)));
+		anim.addKeyframe(keyframe2);
+
+
+
+		playFirstKeyframe(anim);
 	}
 
 	virtual void Update(float frameTime) override
