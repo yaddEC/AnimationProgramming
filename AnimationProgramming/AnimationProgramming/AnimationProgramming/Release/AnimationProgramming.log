@@ -1,8 +1,28 @@
-﻿  AnimationProgramming.cpp
-  stdafx.cpp
+﻿  Maths.cpp
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.h(197,19): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(5,23): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(10,22): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(506,34): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(904,20): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(905,24): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(973,18): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(975,18): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(979,18): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(980,24): warning C4305: '=' : troncation de 'double' à 'float'
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(986,18): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(987,23): warning C4305: '=' : troncation de 'double' à 'float'
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1001,9): warning C4068: pragma inconnu 'mark'
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1008,17): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1009,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1018,19): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1019,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1028,19): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1029,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1037,19): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\AnimationProgramming\Maths.cpp(1038,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
   Génération de code en cours
-  8 of 9 functions (88.9%) were compiled, the rest were copied from previous compilation.
+  2 of 169 functions ( 1.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   Fin de la génération du code
-  AnimationProgramming.vcxproj -> C:\Users\u.osmanoglu\Documents\AnimProg\AnimationProgramming\AnimationProgramming\Release\AnimationProgramming.exe
+  AnimationProgramming.vcxproj -> C:\Users\y.dechaux\Documents\SkeletonAnim\AnimationProgramming\AnimationProgramming\Release\AnimationProgramming.exe

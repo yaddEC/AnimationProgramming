@@ -270,17 +270,15 @@ public:
 
     void convertToUnitNormQuaternion();
 
-
     Quaternion conjugate();
-
 
     Quaternion inverse();
 
     void inverse(Quaternion& q);
 
+    Matrix4 transformQuaternionToMatrix4();
 
-    Matrix3 transformQuaternionToMatrix3n();
-
+    Vector3D rotate_vector_by_quaternion(const Vector3D& v);
 
     void transformEulerAnglesToQuaternion(float x, float y, float z);
 
@@ -290,7 +288,7 @@ public:
     void transformMatrix3nToQuaternion(Matrix3& uMatrix);
 
 
-    void show();
+  
 
 };
 

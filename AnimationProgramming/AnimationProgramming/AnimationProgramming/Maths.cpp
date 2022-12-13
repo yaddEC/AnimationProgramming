@@ -907,32 +907,33 @@ void Quaternion::convertToUnitNormQuaternion() {
 }
 
 
-Matrix3 Quaternion::transformQuaternionToMatrix3n() {
+Matrix4 Quaternion::transformQuaternionToMatrix4() {
 
-    // 3x3 matrix - column major. X vector is 0, 1, 2, etc. (openGL prefer way)
-    //	0	3	6
-    //	1	4	7
-    //	2	5	8
+    Matrix4 m;
 
-
-    Matrix3 m;
-
-    m.matrixTab9[0] = 2 * (s * s + v.x * v.x) - 1;
-    m.matrixTab9[3] = 2 * (v.x * v.y - s * v.z);
-    m.matrixTab9[6] = 2 * (v.x * v.z + s * v.y);
-
-    m.matrixTab9[1] = 2 * (v.x * v.y + s * v.z);
-    m.matrixTab9[4] = 2 * (s * s + v.y * v.y) - 1;
-    m.matrixTab9[7] = 2 * (v.y * v.z - s * v.x);
-
-    m.matrixTab9[2] = 2 * (v.x * v.z - s * v.y);
-    m.matrixTab9[5] = 2 * (v.y * v.z + s * v.x);
-    m.matrixTab9[8] = 2 * (s * s + v.z * v.z) - 1;
-
-
+    m.matrixTab4[0][0] = 2 * (s * s + v.x * v.x) - 1;
+    m.matrixTab4[1][0] = 2 * (v.x * v.y + s * v.z);
+    m.matrixTab4[2][0] = 2 * (v.x * v.z - s * v.y);
+    m.matrixTab4[3][0] = 0;
+   
+    
+    m.matrixTab4[0][1] = 2 * (v.x * v.y - s * v.z);
+    m.matrixTab4[1][1] = 2 * (s * s + v.y * v.y) - 1;
+    m.matrixTab4[2][1] = 2 * (v.y * v.z + s * v.x);
+    m.matrixTab4[3][1] = 0;
+    
+    m.matrixTab4[0][2] = 2 * (v.x * v.z + s * v.y);
+    m.matrixTab4[1][2] = 2 * (v.y * v.z - s * v.x);
+    m.matrixTab4[2][2] = 2 * (s * s + v.z * v.z) - 1;
+    m.matrixTab4[3][2] = 0;
+    
+    m.matrixTab4[0][3] = 0;
+    m.matrixTab4[1][3] = 0;
+    m.matrixTab4[2][3] = 0;
+    m.matrixTab4[3][3] = 1;
+   
     return m;
 }
-
 
 void Quaternion::transformEulerAnglesToQuaternion(float x, float y, float z) {
 

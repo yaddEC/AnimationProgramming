@@ -5,9 +5,9 @@
 class Skeleton
 {
 public:
-	Skeleton();
+	Skeleton() {}
 
-	std::vector<Bone>& skeletonBones;
+	std::vector<Bone> skeletonBones;
 	void Init();
-	void setBoneID();
+	
 };
