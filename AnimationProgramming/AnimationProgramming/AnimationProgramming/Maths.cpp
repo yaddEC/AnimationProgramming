@@ -1,3 +1,5 @@
+#pragma mark-Matrix to quaternion
+
 #include "Maths.h"
 using namespace Math;
 
@@ -693,78 +695,104 @@ using namespace Math;
 
 //====================
 
-// -- > More Fonction 
-// find the maximum between 2 points
-int checkMax2(int a, int b)
-{
-    return (a < b) ? b : a;
-}
 
-// Find the minimum between 2 points
-int checkMin2(int a, int b)
-{
-    return (a < b) ? a : b;
-}
 
-// find the maximum between 3 points
-int checkMax3(int a, int b, int c)
-{
-    int d;
-    d = a < b ? b : a;
-    return (d < c) ? c : d;
-}
+//======= Check ======
 
-// Find the minimum between 3 points
-int checkMin3(int a, int b, int c)
-{
-    int d;
-    d = a > b ? b : a;
-    return (d > c) ? c : d;
-}
+    // find the maximum between 2 points
+    int Math::checkMax2(int a, int b)
+    {
+        return (a < b) ? b : a;
+    }
 
-// Function to find the barycenter
-float edgeFunction(const Vector3D& a, const Vector3D& b, const Vector3D& c)
-{
-    return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
-}
+    // Find the minimum between 2 points
+    int Math::checkMin2(int a, int b)
+    {
+        return (a < b) ? a : b;
+    }
 
-float GetDeterminantMat2(const float a, const float b, const float c, const float d)
-{
-    return (a * d - b * c);
-}
+    // find the maximum between 3 points
+    int Math::checkMax3(int a, int b, int c)
+    {
+        int d;
+        d = a < b ? b : a;
+        return (d < c) ? c : d;
+    }
 
-float GetDeterminantMat3(const Vector3D& a, const Vector3D& b, const Vector3D& c)
-{
-    return (
-        a.x * GetDeterminantMat2(b.y, b.z, c.y, c.z)
-        - a.y * GetDeterminantMat2(b.x, b.z, c.x, c.z)
-        + a.z * GetDeterminantMat2(b.x, b.y, c.x, c.y)
-        );
-}
+    // Find the minimum between 3 points
+    int Math::checkMin3(int a, int b, int c)
+    {
+        int d;
+        d = a > b ? b : a;
+        return (d > c) ? c : d;
+    }
 
-float GetDeterminantMat3(const float tab[3][3])
-{
-    return (
-        tab[0][0] * GetDeterminantMat2(tab[1][1], tab[1][2], tab[2][1], tab[2][2])
-        - tab[0][1] * GetDeterminantMat2(tab[1][0], tab[1][2], tab[2][0], tab[2][2])
-        + tab[0][2] * GetDeterminantMat2(tab[1][0], tab[1][1], tab[2][0], tab[2][1])
-        );
-}
+//====================
 
-float GetDeterminantMat4(const Matrix4& a)
-{
-    return(
-        a.matrixTab4[0][0] * GetDeterminantMat3({ a.matrixTab4[1][1], a.matrixTab4[1][2], a.matrixTab4[1][3] }, { a.matrixTab4[2][1], a.matrixTab4[2][2], a.matrixTab4[2][3] }, { a.matrixTab4[3][1], a.matrixTab4[3][2], a.matrixTab4[3][3] })
-        - a.matrixTab4[0][1] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][2], a.matrixTab4[1][3] }, { a.matrixTab4[2][0], a.matrixTab4[2][2], a.matrixTab4[2][3] }, { a.matrixTab4[3][0], a.matrixTab4[3][2], a.matrixTab4[3][3] })
-        + a.matrixTab4[0][2] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][3] }, { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][3] }, { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][3] })
-        - a.matrixTab4[0][3] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][2] }, { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][2] }, { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][2] })
-        );
-}
 
-float Lerp(float a, float b, float t)
-{
-    return a + t * (b - a);
-}
+//== DeterminantMat ==
+
+    float Math::GetDeterminantMat2(const float a, const float b, const float c, const float d)
+    {
+        return (a * d - b * c);
+    }
+
+    float Math::GetDeterminantMat3(const Vector3D& a, const Vector3D& b, const Vector3D& c)
+    {
+        return (
+              a.x * GetDeterminantMat2(b.y, b.z, c.y, c.z)
+            - a.y * GetDeterminantMat2(b.x, b.z, c.x, c.z)
+            + a.z * GetDeterminantMat2(b.x, b.y, c.x, c.y)
+            );
+    }
+
+    float Math::GetDeterminantMat3(const float tab[3][3])
+    {
+        return (
+              tab[0][0] * GetDeterminantMat2(tab[1][1], tab[1][2], tab[2][1], tab[2][2])
+            - tab[0][1] * GetDeterminantMat2(tab[1][0], tab[1][2], tab[2][0], tab[2][2])
+            + tab[0][2] * GetDeterminantMat2(tab[1][0], tab[1][1], tab[2][0], tab[2][1])
+            );
+    }
+
+    float Math::GetDeterminantMat4(const Matrix4& a)
+    {
+        return(
+              a.matrixTab4[0][0] * GetDeterminantMat3({ a.matrixTab4[1][1], a.matrixTab4[1][2], a.matrixTab4[1][3] }, 
+                                                      { a.matrixTab4[2][1], a.matrixTab4[2][2], a.matrixTab4[2][3] }, 
+                                                      { a.matrixTab4[3][1], a.matrixTab4[3][2], a.matrixTab4[3][3] })
+
+            - a.matrixTab4[0][1] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][2], a.matrixTab4[1][3] }, 
+                                                      { a.matrixTab4[2][0], a.matrixTab4[2][2], a.matrixTab4[2][3] }, 
+                                                      { a.matrixTab4[3][0], a.matrixTab4[3][2], a.matrixTab4[3][3] })
+
+            + a.matrixTab4[0][2] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][3] }, 
+                                                      { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][3] }, 
+                                                      { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][3] })
+
+            - a.matrixTab4[0][3] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][2] }, 
+                                                      { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][2] }, 
+                                                      { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][2] })
+            );
+    }
+
+//====================
+
+
+//== OtherFunction ===
+
+    // Function to find the barycenter
+    float Math::edgeFunction(const Vector3D& a, const Vector3D& b, const Vector3D& c)
+    {
+        return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
+    }
+
+    float Math::Lerp(float a, float b, float t)
+    {
+        return a + t * (b - a);
+    }
+
+//====================
 
 Vector3D operator*(const float b, const Vector3D& a)
 {
@@ -776,320 +804,291 @@ Vector3D operator*(const float b, const Vector3D& a)
     return c;
 }
 
-Quaternion::Quaternion() {
-
-}
-
-
-Quaternion::Quaternion(float uS, Vector3D& uV)  {
-    s = uS;
-    v = uV;
-}
-
-
-Quaternion::~Quaternion() {
-
-}
-
-
-Quaternion::Quaternion(const Quaternion& value) {
-
-    s = value.s;
-    v = value.v;
-
-};
-
-
-Quaternion& Quaternion::operator=(const Quaternion& value) {
-
-    s = value.s;
-    v = value.v;
-
-    return *this;
-};
-
-
-
-void Quaternion::operator+=(const Quaternion& q) {
-
-    s += q.s;
-    v =v+ q.v;
-
-}
-
-Quaternion Quaternion::operator+(const Quaternion& q) {
-
-    float scalar = s + q.s;
-    Vector3D imaginary = v + q.v;
-
-    return Quaternion(scalar, imaginary);
-}
-
-void Quaternion::operator-=(const Quaternion& q) {
-
-    s -= q.s;
-    v =v- q.v;
-}
-
-Quaternion Quaternion::operator-(const Quaternion& q) {
-
-    float scalar = s - q.s;
-    Vector3D imaginary = v - q.v;
-
-    return Quaternion(scalar, imaginary);
-}
-
-
-/*void Quaternion::operator*=(const Quaternion& q) {
-
-    (*this) = multiply(q);
-}*/
-
-Quaternion Quaternion::operator*(const Quaternion& q) {
-
-    float scalar = s * q.s - v.Dot(q.v);
-
-    Vector3D imaginary =  s* q.v  + v * q.s + v.CrossProduct(q.v);
-
-    return Quaternion(scalar, imaginary);
-
-}
-
-
-void Quaternion::operator*=(const float value) {
-
-    s *= value;
-    v =v* value;
-}
-
-
-Quaternion Quaternion::operator*(const float value) {
-
-    float scalar = s * value;
-    Vector3D imaginary = v * value;
-
-    return Quaternion(scalar, imaginary);
-
-}
-
-Quaternion Quaternion::operator*(const Vector3D& uValue) {
-
-
-    float sPart = -(v.x * uValue.x + v.y * uValue.y + v.z * uValue.z);
-    float xPart = s * uValue.x + v.y * uValue.z - v.z * uValue.y;
-    float yPart = s * uValue.y + v.z * uValue.x - v.x * uValue.z;
-    float zPart = s * uValue.z + v.x * uValue.y - v.y * uValue.x;
-
-    Vector3D vectorPart(xPart, yPart, zPart);
-    Quaternion result(sPart, vectorPart);
-
-    return result;
-
-}
-
-
-float Quaternion::dot(Quaternion& q) {
-
-    return s * q.s + v.x * q.v.x + v.y * q.v.y + v.z * q.v.z;
-
-}
-
-
-float Quaternion::norm() {
-
-    float scalar = s * s;
-    float imaginary = v.Dot(v);
-
-    return sqrt(scalar + imaginary);
-}
-
-
-void Quaternion::normalize() {
-
-    if (norm() != 0) {
-
-        float normValue = 1 / norm();
-
-        s = s* normValue;
-        v = v* normValue;
-    }
-}
-
-Quaternion Quaternion::conjugate() {
-
-    float scalar = s;
-    Vector3D imaginary = v * (-1);
-
-    return Quaternion(scalar, imaginary);
-}
-
-Quaternion Quaternion::inverse() {
-
-    float absoluteValue = norm();
-    absoluteValue *= absoluteValue;
-    absoluteValue = 1 / absoluteValue;
-
-    Quaternion conjugateValue = conjugate();
-
-    float scalar = conjugateValue.s * (absoluteValue);
-    Vector3D imaginary = conjugateValue.v * (absoluteValue);
-
-    return Quaternion(scalar, imaginary);
-}
-
-void Quaternion::inverse(Quaternion& q) {
-
-    Quaternion dummy = q.inverse();
-
-    q = dummy;
-}
-
-
-void Quaternion::convertToUnitNormQuaternion() {
-
-    float angle = DegToRad(s);
-
-    v.Normalize();
-    s = cosf(angle * 0.5);
-    v = v * sinf(angle * 0.5);
-
-}
-
-
-Matrix4 Quaternion::transformQuaternionToMatrix4() {
-
-    Matrix4 m;
-
-    m.matrixTab4[0][0] = 2 * (s * s + v.x * v.x) - 1;
-    m.matrixTab4[1][0] = 2 * (v.x * v.y + s * v.z);
-    m.matrixTab4[2][0] = 2 * (v.x * v.z - s * v.y);
-    m.matrixTab4[3][0] = 0;
-   
-    
-    m.matrixTab4[0][1] = 2 * (v.x * v.y - s * v.z);
-    m.matrixTab4[1][1] = 2 * (s * s + v.y * v.y) - 1;
-    m.matrixTab4[2][1] = 2 * (v.y * v.z + s * v.x);
-    m.matrixTab4[3][1] = 0;
-    
-    m.matrixTab4[0][2] = 2 * (v.x * v.z + s * v.y);
-    m.matrixTab4[1][2] = 2 * (v.y * v.z - s * v.x);
-    m.matrixTab4[2][2] = 2 * (s * s + v.z * v.z) - 1;
-    m.matrixTab4[3][2] = 0;
-    
-    m.matrixTab4[0][3] = 0;
-    m.matrixTab4[1][3] = 0;
-    m.matrixTab4[2][3] = 0;
-    m.matrixTab4[3][3] = 1;
-   
-    return m;
-}
-
-void Quaternion::transformEulerAnglesToQuaternion(float x, float y, float z) {
-
-    x = DegToRad(x);
-    y = DegToRad(y);
-    z = DegToRad(z);
-
-    x = x / 2;
-    y = y / 2;
-    z = z / 2;
-
-    s = cos(z) * cos(y) * cos(x) + sin(z) * sin(y) * sin(x);
-    v.x = cos(z) * cos(y) * sin(x) - sin(z) * sin(y) * cos(x);
-    v.y = cos(z) * sin(y) * cos(x) + sin(z) * cos(y) * sin(x);
-    v.z = sin(z) * cos(y) * cos(x) - cos(z) * sin(y) * sin(x);
-
-
-}
-
-
-Vector3D Quaternion::transformQuaternionToEulerAngles() {
-
-    // 3x3 matrix - column major. X vector is 0, 1, 2, etc. (openGL prefer way)
-    //	0	3	6
-    //	1	4	7
-    //	2	5	8
-
-
-    float x = 0.0;
-    float y = 0.0;
-    float z = 0.0;
-
-    float test = 2 * (v.x * v.z - s * v.y);
-
-    if (test != 1 && test != -1) {
-
-        x = atan2(v.y * v.z + s * v.x, 0.5 - (v.x * v.x + v.y * v.y));
-        y = asin(-2 * (v.x * v.z - s * v.y));
-        z = atan2(v.x * v.y + s * v.z, 0.5 - (v.y * v.y + v.z * v.z));
-
-    }
-    else if (test == 1) {
-        z = atan2(v.x * v.y + s * v.z, 0.5 - (v.y * v.y + v.z * v.z));
-        y = -M_PI / 2.0;
-        x = -z + atan2(v.x * v.y - s * v.z, v.x * v.z + s * v.y);
-
-    }
-    else if (test == -1) {
-
-        z = atan2(v.x * v.y + s * v.z, 0.5 - (v.y * v.y + v.z * v.z));
-        y = M_PI / 2.0;
-        x = z + atan2(v.x * v.y - s * v.z, v.x * v.z + s * v.y);
-
+//==== Quaternion ====
+
+    Quaternion::Quaternion() 
+    {
+        this->s = 0;
+        this->v = { 0, 0, 0 };
     }
 
-    x = RadToDeg(x);
-    y = RadToDeg(y);
-    z = RadToDeg(z);
-
-    Vector3D euler(x, y, z);
-
-    return euler;
-}
-
-#pragma mark-Matrix to quaternion
-void Quaternion::transformMatrix3nToQuaternion(Matrix3& uMatrix) {
-
-    float trace = uMatrix.matrixTab9[0] + uMatrix.matrixTab9[4] + uMatrix.matrixTab9[8];
-
-    if (trace > 0) {      //s=4*qw
-
-        s = 0.5 * sqrt(1 + trace);
-        float S = 0.25 / s;
-
-        v.x = S * (uMatrix.matrixTab9[5] - uMatrix.matrixTab9[7]);
-        v.y = S * (uMatrix.matrixTab9[6] - uMatrix.matrixTab9[2]);
-        v.z = S * (uMatrix.matrixTab9[1] - uMatrix.matrixTab9[3]);
-
+    Quaternion::Quaternion(float uS, Vector3D& uV)  
+    {
+        s = uS;
+        v = uV;
     }
-    else if (uMatrix.matrixTab9[0] > uMatrix.matrixTab9[4] && uMatrix.matrixTab9[0] > uMatrix.matrixTab9[8]) { 
 
-        v.x = 0.5 * sqrt(1 + uMatrix.matrixTab9[0] - uMatrix.matrixTab9[4] - uMatrix.matrixTab9[8]);
-        float X = 0.25 / v.x;
+    Quaternion::Quaternion(const Quaternion& value) 
+    {
+        s = value.s;
+        v = value.v;
+    };
 
-        v.y = X * (uMatrix.matrixTab9[3] + uMatrix.matrixTab9[1]);
-        v.z = X * (uMatrix.matrixTab9[6] + uMatrix.matrixTab9[2]);
-        s = X * (uMatrix.matrixTab9[5] - uMatrix.matrixTab9[7]);
-
-    }
-    else if (uMatrix.matrixTab9[4] > uMatrix.matrixTab9[8]) {
-
-        v.y = 0.5 * sqrt(1 - uMatrix.matrixTab9[0] + uMatrix.matrixTab9[4] - uMatrix.matrixTab9[8]);
-        float Y = 0.25 / v.y;
-        v.x = Y * (uMatrix.matrixTab9[3] + uMatrix.matrixTab9[1]);
-        v.z = Y * (uMatrix.matrixTab9[7] + uMatrix.matrixTab9[5]);
-        s = Y * (uMatrix.matrixTab9[6] - uMatrix.matrixTab9[2]);
-
-    }
-    else { 
-
-        v.z = 0.5 * sqrt(1 - uMatrix.matrixTab9[0] - uMatrix.matrixTab9[4] + uMatrix.matrixTab9[8]);
-        float Z = 0.25 / v.z;
-        v.x = Z * (uMatrix.matrixTab9[6] + uMatrix.matrixTab9[2]);
-        v.y = Z * (uMatrix.matrixTab9[7] + uMatrix.matrixTab9[5]);
-        s = Z * (uMatrix.matrixTab9[1] - uMatrix.matrixTab9[3]);
+    float Quaternion::Dot(Quaternion& q) 
+    {
+        return s * q.s + v.x * q.v.x + v.y * q.v.y + v.z * q.v.z;
     }
 
 
-}
+    float Quaternion::Norm() 
+    {
+        float scalar    = s * s;
+        float imaginary = v.Dot(v);
 
+        return sqrt(scalar + imaginary);
+    }
+
+    void Quaternion::Normalize() 
+    {
+        if (Norm() != 0) 
+        {
+            float normValue = 1 / Norm();
+
+            s = s * normValue;
+            v = v * normValue;
+        }
+    }
+
+    void Quaternion::ConvertToUnitNormQuaternion() 
+    {
+        float angle = DegToRad(s);
+
+        v.Normalize();
+        s = cosf(angle * 0.5);
+        v = v * sinf(angle * 0.5);
+    }
+
+    void Quaternion::Inverse(Quaternion& q) 
+    {
+        Quaternion inv = q.Inverse();
+
+        q = inv;
+    }
+
+    void Quaternion::TransformEulerAnglesToQuaternion(float x, float y, float z) 
+    {
+        x   = DegToRad(x);
+        y   = DegToRad(y);
+        z   = DegToRad(z);
+
+        x   = x / 2;
+        y   = y / 2;
+        z   = z / 2;
+
+        s   = cos(z) * cos(y) * cos(x) + sin(z) * sin(y) * sin(x);
+        v.x = cos(z) * cos(y) * sin(x) - sin(z) * sin(y) * cos(x);
+        v.y = cos(z) * sin(y) * cos(x) + sin(z) * cos(y) * sin(x);
+        v.z = sin(z) * cos(y) * cos(x) - cos(z) * sin(y) * sin(x);
+    }
+
+
+    void Quaternion::TransformMatrix3nToQuaternion(Matrix3& uMatrix) 
+    {
+        float trace = uMatrix.matrixTab9[0] + uMatrix.matrixTab9[4] + uMatrix.matrixTab9[8];
+
+        if (trace > 0) 
+        {      
+            //s=4*qw
+            this->s   = 0.5 * sqrt(1 + trace);
+            float S   = 0.25 / s;
+
+            this->v.x = S * (uMatrix.matrixTab9[5] - uMatrix.matrixTab9[7]);
+            this->v.y = S * (uMatrix.matrixTab9[6] - uMatrix.matrixTab9[2]);
+            this->v.z = S * (uMatrix.matrixTab9[1] - uMatrix.matrixTab9[3]);
+
+        }
+        else if (uMatrix.matrixTab9[0] > uMatrix.matrixTab9[4] && uMatrix.matrixTab9[0] > uMatrix.matrixTab9[8]) 
+        {
+            this->v.x = 0.5 * sqrt(1 + uMatrix.matrixTab9[0] - uMatrix.matrixTab9[4] - uMatrix.matrixTab9[8]);
+            float X   = 0.25 / this->v.x;
+
+            this->v.y = X * (uMatrix.matrixTab9[3] + uMatrix.matrixTab9[1]);
+            this->v.z = X * (uMatrix.matrixTab9[6] + uMatrix.matrixTab9[2]);
+            this->s   = X * (uMatrix.matrixTab9[5] - uMatrix.matrixTab9[7]);
+
+        }
+        else if (uMatrix.matrixTab9[4] > uMatrix.matrixTab9[8]) 
+        {
+            v.y     = 0.5 * sqrt(1 - uMatrix.matrixTab9[0] + uMatrix.matrixTab9[4] - uMatrix.matrixTab9[8]);
+            float Y = 0.25 / v.y;
+            v.x     = Y * (uMatrix.matrixTab9[3] + uMatrix.matrixTab9[1]);
+            v.z     = Y * (uMatrix.matrixTab9[7] + uMatrix.matrixTab9[5]);
+            this->s = Y * (uMatrix.matrixTab9[6] - uMatrix.matrixTab9[2]);
+
+        }
+        else 
+        {
+            this->v.z = 0.5 * sqrt(1 - uMatrix.matrixTab9[0] - uMatrix.matrixTab9[4] + uMatrix.matrixTab9[8]);
+            float Z   = 0.25 / v.z;
+            this->v.x = Z * (uMatrix.matrixTab9[6] + uMatrix.matrixTab9[2]);
+            this->v.y = Z * (uMatrix.matrixTab9[7] + uMatrix.matrixTab9[5]);
+            this->s   = Z * (uMatrix.matrixTab9[1] - uMatrix.matrixTab9[3]);
+        }
+
+
+    }
+
+    Quaternion Quaternion::Conjugate() 
+    {
+        float scalar       = this->s;
+        Vector3D imaginary = this->v * (-1);
+
+        return Quaternion(scalar, imaginary);
+    }
+
+    Quaternion Quaternion::Inverse() 
+    {
+        float absoluteValue = Norm();
+        absoluteValue      *= absoluteValue;
+        absoluteValue       = 1 / absoluteValue;
+
+        Quaternion conjugateValue = Conjugate();
+
+        float scalar       = conjugateValue.s * (absoluteValue);
+        Vector3D imaginary = conjugateValue.v * (absoluteValue);
+
+        return Quaternion(scalar, imaginary);
+    }
+
+    Matrix4 Quaternion::TransformQuaternionToMatrix4() 
+    {
+        Matrix4 m;
+
+        m.matrixTab4[0][0] = 2 * (s * s + v.x * v.x) - 1;
+        m.matrixTab4[1][0] = 2 * (v.x * v.y + s * v.z);
+        m.matrixTab4[2][0] = 2 * (v.x * v.z - s * v.y);
+        m.matrixTab4[3][0] = 0;
+
+
+        m.matrixTab4[0][1] = 2 * (v.x * v.y - s * v.z);
+        m.matrixTab4[1][1] = 2 * (s * s + v.y * v.y) - 1;
+        m.matrixTab4[2][1] = 2 * (v.y * v.z + s * v.x);
+        m.matrixTab4[3][1] = 0;
+
+        m.matrixTab4[0][2] = 2 * (v.x * v.z + s * v.y);
+        m.matrixTab4[1][2] = 2 * (v.y * v.z - s * v.x);
+        m.matrixTab4[2][2] = 2 * (s * s + v.z * v.z) - 1;
+        m.matrixTab4[3][2] = 0;
+
+        m.matrixTab4[0][3] = 0;
+        m.matrixTab4[1][3] = 0;
+        m.matrixTab4[2][3] = 0;
+        m.matrixTab4[3][3] = 1;
+
+        return m;
+    }
+
+    Vector3D Quaternion::TransformQuaternionToEulerAngles() 
+    {
+        // 3x3 matrix - column major. X vector is 0, 1, 2, etc. (openGL prefer way)
+        //	0	3	6
+        //	1	4	7
+        //	2	5	8
+
+        float x = 0.0;
+        float y = 0.0;
+        float z = 0.0;
+
+        float test = 2 * (this->v.x * this->v.z - s * this->v.y);
+
+        if (test != 1 && test != -1) 
+        {
+            x = atan2(this->v.y * this->v.z + s * this->v.x, 0.5 - (this->v.x * this->v.x + this->v.y * this->v.y));
+            y = asin(-2 * (this->v.x * this->v.z - s * this->v.y));
+            z = atan2(this->v.x * this->v.y + s * this->v.z, 0.5 - (this->v.y * this->v.y + this->v.z * this->v.z));
+        }
+        else if (test == 1) 
+        {
+            z = atan2(this->v.x * this->v.y + s * this->v.z, 0.5 - (this->v.y * this->v.y + this->v.z * this->v.z));
+            y = -M_PI / 2.0;
+            x = -z + atan2(this->v.x * this->v.y - s * this->v.z, this->v.x * this->v.z + s * this->v.y);
+        }
+        else if (test == -1) 
+        {
+            z = atan2(this->v.x * this->v.y + s * this->v.z, 0.5 - (this->v.y * this->v.y + this->v.z * this->v.z));
+            y = M_PI / 2.0;
+            x = z + atan2(this->v.x * this->v.y - s * this->v.z, this->v.x * this->v.z + s * this->v.y);
+        }
+
+        x = RadToDeg(x);
+        y = RadToDeg(y);
+        z = RadToDeg(z);
+
+        Vector3D euler(x, y, z);
+
+        return euler;
+    }
+
+    Quaternion& Quaternion::operator=(const Quaternion& value) 
+    {
+        this->s = value.s;
+        this->v = value.v;
+
+        return *this;
+    };
+
+    Quaternion Quaternion::operator+(const Quaternion& q) 
+    {
+        float scalar       = s + q.s;
+        Vector3D imaginary = v + q.v;
+
+        return Quaternion(scalar, imaginary);
+    }
+
+    Quaternion Quaternion::operator-(const Quaternion& q) 
+    {
+        float scalar       = s - q.s;
+        Vector3D imaginary = v - q.v;
+
+        return Quaternion(scalar, imaginary);
+    }
+
+    Quaternion Quaternion::operator*(const Quaternion& q) 
+    {
+        float scalar       = s * q.s - v.Dot(q.v);
+        Vector3D imaginary = s * q.v + v * q.s + v.CrossProduct(q.v);
+
+        return Quaternion(scalar, imaginary);
+
+    }
+
+    Quaternion Quaternion::operator*(const Vector3D& uValue) 
+    {
+        float sPart = -(v.x * uValue.x + v.y * uValue.y + v.z * uValue.z);
+        float xPart = s * uValue.x + v.y * uValue.z - v.z * uValue.y;
+        float yPart = s * uValue.y + v.z * uValue.x - v.x * uValue.z;
+        float zPart = s * uValue.z + v.x * uValue.y - v.y * uValue.x;
+
+        Vector3D vectorPart(xPart, yPart, zPart);
+        Quaternion result(sPart, vectorPart);
+
+        return result;
+    }
+
+    Quaternion Quaternion::operator*(const float value) 
+    {
+        float scalar       = s * value;
+        Vector3D imaginary = v * value;
+
+        return Quaternion(scalar, imaginary);
+    }
+
+    void Quaternion::operator+=(const Quaternion& q) 
+    {
+        s += q.s;
+        v  = v + q.v;
+    }
+
+    void Quaternion::operator-=(const Quaternion& q) 
+    {
+        s -= q.s;
+        v  = v - q.v;
+    }
+
+    void Quaternion::operator*=(const float value) 
+    {
+        s *= value;
+        v = v * value;
+    }
+
+//====================

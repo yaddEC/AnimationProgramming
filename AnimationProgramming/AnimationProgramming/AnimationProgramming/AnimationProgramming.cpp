@@ -55,6 +55,13 @@ class CSimulation : public ISimulation
 		// Z axis
 		DrawLine(0, 0, 0, 0, 0, 100, 0, 0, 1);
 
+		float posX, posY, posZ, quatW, quatX, quatY, quatZ;
+		for (int i = 0; i < 64; i++)
+		{
+			GetAnimLocalBoneTransform("ThirdPersonWalk.anim", i, 64, posX, posY, posZ, quatW, quatX, quatY, quatZ);
+			GetSkeletonBoneLocalBindTransform(i, posX, posY, posZ, quatW, quatX, quatY, quatZ);
+		}
+
 		
 		for (uint32_t boneIndex = 0; boneIndex < spookyScary.skeletonBones.size(); ++boneIndex)
 		{

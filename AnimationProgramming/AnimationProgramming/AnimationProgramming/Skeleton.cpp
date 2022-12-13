@@ -35,7 +35,7 @@ void Skeleton::Init()
 		Matrix4 localMatrix = identity4x4();
 		Matrix4 worldMatrix = identity4x4();
 		localMatrix = localMatrix.CreateTranslationMatrix(pos);
-		localMatrix = localMatrix * temp.transformQuaternionToMatrix4();
+		localMatrix = localMatrix * temp.TransformQuaternionToMatrix4();
 
 		//localMatrix.CreateScaleMatrix({10,10,10});
 		skeletonBones[boneIndex].localMatrix = localMatrix;
