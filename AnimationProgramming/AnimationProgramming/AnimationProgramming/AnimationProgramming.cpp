@@ -6,16 +6,18 @@
 #include "Maths.h"
 #include "Engine.h"
 #include "Simulation.h"
-#include "Keyframe.h"
+#include "Animation.h"
 
 class CSimulation : public ISimulation
 {
 	Skeleton spookyScary;
-	Animation anim;
+	Animation ThirdPersonWalk;
+	float deltaTime;
 	virtual void Init() override
 	{
 		
 		spookyScary.Init();
+		ThirdPersonWalk.Init(spookyScary);
 		int spine01 =	GetSkeletonBoneIndex("spine_01");
 		int spineParent = GetSkeletonBoneParentIndex(spine01);
 		const char* spineParentName = GetSkeletonBoneName(spineParent);
@@ -28,20 +30,16 @@ class CSimulation : public ISimulation
 		printf("Anim key count : %ld\n", keyCount);
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
 
-		Keyframe keyframe1;
-		keyframe1.setPosition(Vector3D(posX, posY, posZ));
-		keyframe1.setRotation(Quaternion(quatW, Vector3D(quatX, quatY, quatZ)));
-		anim.addKeyframe(keyframe1);
+		deltaTime = 2;
 
+		for (uint32_t boneIndex = 0; boneIndex < GetSkeletonBoneCount(); ++boneIndex)
+		{
+			float x1, y1, z1, qx1, qy1, qz1, qw1;
+			GetSkeletonBoneLocalBindTransform(static_cast<int>(boneIndex), x1, y1, z1, qw1, qx1, qy1, qz1);
+			GetSkeletonBoneName(boneIndex);
+			printf("%s : % f,% f,% f\n", GetSkeletonBoneName(boneIndex), x1, y1, z1);
 
-		Keyframe keyframe2;
-		keyframe2.setPosition(Vector3D(10, 500, 10));
-		keyframe2.setRotation(Quaternion(0, Vector3D(0, 1, 0)));
-		anim.addKeyframe(keyframe2);
-
-
-
-		playFirstKeyframe(anim);
+		}
 	}
 
 	virtual void Update(float frameTime) override
@@ -54,20 +52,38 @@ class CSimulation : public ISimulation
 
 		// Z axis
 		DrawLine(0, 0, 0, 0, 0, 100, 0, 0, 1);
-
-		float posX, posY, posZ, quatW, quatX, quatY, quatZ;
-		for (int i = 0; i < 64; i++)
-		{
-			GetAnimLocalBoneTransform("ThirdPersonWalk.anim", i, 64, posX, posY, posZ, quatW, quatX, quatY, quatZ);
-			GetSkeletonBoneLocalBindTransform(i, posX, posY, posZ, quatW, quatX, quatY, quatZ);
-		}
-
-		
+			
 		for (uint32_t boneIndex = 0; boneIndex < spookyScary.skeletonBones.size(); ++boneIndex)
 		{
-			if (spookyScary.skeletonBones[boneIndex].parent != NULL)
+			/*if (spookyScary.skeletonBones[boneIndex].parent != NULL)
 			{
-				DrawLine(spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[0][3]+300, spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[1][3], spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[2][3], spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[0][3]+300, spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[1][3], spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[2][3], 0.5, 0.5, 0.5);
+				DrawLine(spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[0][3] + 300, 
+						 spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[1][3], 
+						 spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[2][3], 
+						 spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[0][3]+300, 
+						 spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[1][3], 
+						 spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[2][3], 
+						 0.5,
+						 0.5, 
+						 0.5);
+
+			}*/
+
+			for (uint32_t boneIndex = 0; boneIndex < ThirdPersonWalk.animation[deltaTime].skeletonBones.size(); ++boneIndex)
+			{
+				if (ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent != NULL)
+				{
+					DrawLine(ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].worldMatrix.matrixTab4[0][3] + 300, 
+							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].worldMatrix.matrixTab4[1][3], 
+							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].worldMatrix.matrixTab4[2][3], 
+							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[0][3] + 300, 
+							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[1][3], 
+							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[2][3], 
+							 0.5, 
+							 0.5,
+							 0.5);
+				}
+
 			}
 			/*float x1, y1, z1, qx1, qy1, qz1, qw1;
 			GetSkeletonBoneLocalBindTransform(static_cast<int>(spookyScary.skeletonBones[boneIndex].id_), x1, y1, z1, qw1, qx1, qy1, qz1);

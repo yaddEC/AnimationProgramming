@@ -163,7 +163,7 @@ namespace Math
 
 
     //===== Matrix4 =====
-
+        class Quaternion;
         class Matrix4
         {
         public:
@@ -187,6 +187,7 @@ namespace Math
             Matrix4 GetTransposeMat4();
 
             static Matrix4 CreateTransformMatrix(const Vector3D& rotation, const Vector3D& position, const Vector3D& scale);
+            static Matrix4 CreateTransformMatrixWithQuaternion(const Quaternion& rotation, const Vector3D& position, const Vector3D& scale);
             static Matrix4 CreateTranslationMatrix(const Vector3D& translation);
             static Matrix4 CreateScaleMatrix(const Vector3D& scale);
             static Matrix4 CreateXRotationMatrix(float angle);
@@ -235,7 +236,7 @@ namespace Math
 
             Quaternion Conjugate();
             Quaternion Inverse();
-            Matrix4    TransformQuaternionToMatrix4();
+            Matrix4    TransformQuaternionToMatrix4() const; 
             Vector3D   Rotate_vector_by_quaternion(const Vector3D& v);
             Vector3D   TransformQuaternionToEulerAngles();
 

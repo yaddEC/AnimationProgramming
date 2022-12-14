@@ -155,9 +155,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="Keyframe.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="Skeleton.h" />
@@ -165,9 +165,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationProgramming.cpp" />
     <ClCompile Include="Bone.cpp" />
-    <ClCompile Include="Keyframe.cpp" />
     <ClCompile Include="Maths.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="stdafx.cpp" />

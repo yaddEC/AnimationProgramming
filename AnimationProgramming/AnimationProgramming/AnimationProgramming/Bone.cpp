@@ -5,7 +5,7 @@ void Bone::Update()
 	//test3.normalize();
 	if (parent != NULL)
 	{
-		worldMatrix =  parent->worldMatrix* localMatrix;
+		worldMatrix =  parent->worldMatrix * localMatrix;
 	}
 	else
 	{
@@ -16,5 +16,4 @@ void Bone::Update()
 	{
 		childrenBone[i]->Update();
 	}
-
 }

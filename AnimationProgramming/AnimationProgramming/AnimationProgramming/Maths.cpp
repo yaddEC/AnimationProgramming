@@ -445,6 +445,12 @@ using namespace Math;
         return  CreateTranslationMatrix(position) * CreateYRotationMatrix(rotation.y) * CreateXRotationMatrix(rotation.x) * CreateZRotationMatrix(rotation.z) * CreateScaleMatrix(scale);
     }
 
+    Matrix4 Matrix4::CreateTransformMatrixWithQuaternion(const Quaternion& rotation, const Vector3D& position, const Vector3D& scale)
+    {
+        return  CreateTranslationMatrix(position) * rotation.TransformQuaternionToMatrix4() * CreateScaleMatrix(scale); 
+    }
+
+
     Matrix4 Matrix4::CreateTranslationMatrix(const Vector3D& translation)
     {
         float tab[4][4] =
@@ -590,6 +596,7 @@ using namespace Math;
     
         return mat;
     }
+
 
     Vector4D Matrix4::operator*(const Vector4D& vec1)
     {
@@ -950,24 +957,24 @@ Vector3D operator*(const float b, const Vector3D& a)
         return Quaternion(scalar, imaginary);
     }
 
-    Matrix4 Quaternion::TransformQuaternionToMatrix4() 
+    Matrix4 Quaternion::TransformQuaternionToMatrix4() const
     {
         Matrix4 m;
 
-        m.matrixTab4[0][0] = 2 * (s * s + v.x * v.x) - 1;
-        m.matrixTab4[1][0] = 2 * (v.x * v.y + s * v.z);
-        m.matrixTab4[2][0] = 2 * (v.x * v.z - s * v.y);
+        m.matrixTab4[0][0] = 2 * (s   * s   + v.x * v.x) - 1;
+        m.matrixTab4[1][0] = 2 * (v.x * v.y + v.z * s);
+        m.matrixTab4[2][0] = 2 * (v.x * v.z - v.y * s);
         m.matrixTab4[3][0] = 0;
 
 
-        m.matrixTab4[0][1] = 2 * (v.x * v.y - s * v.z);
-        m.matrixTab4[1][1] = 2 * (s * s + v.y * v.y) - 1;
-        m.matrixTab4[2][1] = 2 * (v.y * v.z + s * v.x);
+        m.matrixTab4[0][1] = 2 * (v.x * v.y - v.z * s);
+        m.matrixTab4[1][1] = 2 * (s   * s   + v.y * v.y) - 1;
+        m.matrixTab4[2][1] = 2 * (v.y * v.z + v.x * s);
         m.matrixTab4[3][1] = 0;
 
-        m.matrixTab4[0][2] = 2 * (v.x * v.z + s * v.y);
-        m.matrixTab4[1][2] = 2 * (v.y * v.z - s * v.x);
-        m.matrixTab4[2][2] = 2 * (s * s + v.z * v.z) - 1;
+        m.matrixTab4[0][2] = 2 * (v.x * v.z + v.y * s);
+        m.matrixTab4[1][2] = 2 * (v.y * v.z - v.x * s);
+        m.matrixTab4[2][2] = 2 * (s   * s   + v.z * v.z) - 1;
         m.matrixTab4[3][2] = 0;
 
         m.matrixTab4[0][3] = 0;
