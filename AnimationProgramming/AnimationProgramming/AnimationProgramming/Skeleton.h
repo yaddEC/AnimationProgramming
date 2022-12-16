@@ -9,5 +9,7 @@ public:
 
 	std::vector<Bone> skeletonBones;
 	void Init();
+	void AnimInit();
+	void Update();
 	
 };

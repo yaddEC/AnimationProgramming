@@ -13,11 +13,13 @@ class CSimulation : public ISimulation
 	Skeleton spookyScary;
 	Animation ThirdPersonWalk;
 	float deltaTime;
+	float deltaTime2;
 	virtual void Init() override
 	{
 		
 		spookyScary.Init();
-		ThirdPersonWalk.Init(spookyScary);
+		spookyScary.AnimInit();
+		spookyScary.Update();
 		int spine01 =	GetSkeletonBoneIndex("spine_01");
 		int spineParent = GetSkeletonBoneParentIndex(spine01);
 		const char* spineParentName = GetSkeletonBoneName(spineParent);
@@ -53,61 +55,42 @@ class CSimulation : public ISimulation
 		// Z axis
 		DrawLine(0, 0, 0, 0, 0, 100, 0, 0, 1);
 			
-		for (uint32_t boneIndex = 0; boneIndex < spookyScary.skeletonBones.size(); ++boneIndex)
-		{
-			/*if (spookyScary.skeletonBones[boneIndex].parent != NULL)
-			{
-				DrawLine(spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[0][3] + 300, 
-						 spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[1][3], 
-						 spookyScary.skeletonBones[boneIndex].worldMatrix.matrixTab4[2][3], 
-						 spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[0][3]+300, 
-						 spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[1][3], 
-						 spookyScary.skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[2][3], 
-						 0.5,
-						 0.5, 
-						 0.5);
 
-			}*/
-
-			for (uint32_t boneIndex = 0; boneIndex < ThirdPersonWalk.animation[deltaTime].skeletonBones.size(); ++boneIndex)
+			for (uint32_t boneIndex = 0; boneIndex < spookyScary.skeletonBones.size(); ++boneIndex)
 			{
-				if (ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent != NULL)
+				if (spookyScary.skeletonBones[boneIndex].parent != NULL)
 				{
-					DrawLine(ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].worldMatrix.matrixTab4[0][3] + 300, 
-							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].worldMatrix.matrixTab4[1][3], 
-							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].worldMatrix.matrixTab4[2][3], 
-							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[0][3] + 300, 
-							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[1][3], 
-							 ThirdPersonWalk.animation[deltaTime].skeletonBones[boneIndex].parent->worldMatrix.matrixTab4[2][3], 
+					Matrix4 drawChild = spookyScary.skeletonBones[boneIndex].AnimBones(deltaTime);
+					Matrix4 drawParent = spookyScary.skeletonBones[boneIndex].parent->AnimBones(deltaTime);
+					DrawLine(drawChild.matrixTab4[0][3] + 300,
+							 drawChild.matrixTab4[1][3],
+							 drawChild.matrixTab4[2][3],
+							drawParent.matrixTab4[0][3] + 300, 
+							drawParent.matrixTab4[1][3], 
+							drawParent.matrixTab4[2][3], 
 							 0.5, 
 							 0.5,
 							 0.5);
 				}
 
 			}
-			/*float x1, y1, z1, qx1, qy1, qz1, qw1;
-			GetSkeletonBoneLocalBindTransform(static_cast<int>(spookyScary.skeletonBones[boneIndex].id_), x1, y1, z1, qw1, qx1, qy1, qz1);
-
-			Matrix4 mat4;
-			Vector3D test5 = Quaternion(qw1, Vector3D(qx1, qy1, qz1)).transformQuaternionToEulerAngles();
-			mat4 = mat4.CreateTransformMatrix(test5, { x1, y1, z1 }, { 1,1,1 });
-			Vector4D pos4d = (Vector4D(1, 1, 1, 1) * mat4); pos4d.Homogenize();
-			Vector3D pos = { pos4d.x, pos4d.y, pos4d.z };
-			Bone temp = spookyScary.skeletonBones[boneIndex];
-			//test3.normalize();
-			while (temp.parent != NULL)
+		
+			
+			deltaTime2++;
+			if (deltaTime2 > 20)
 			{
-				float x2, y2, z2, qx2, qy2, qz2, qw2;
-				GetSkeletonBoneLocalBindTransform(temp.id_, x2, y2, z2, qw2, qx2, qy2, qz2);
-
-				temp = *temp.parent;
+				deltaTime2 = 0;
+				deltaTime++;
 			}
+			if (deltaTime > 30)
+			{
+				deltaTime = 0;
 				
-			*/
+			}
 
 
 
-		}
+		
 
 
 	}
