@@ -6,12 +6,10 @@
 #include "Maths.h"
 #include "Engine.h"
 #include "Simulation.h"
-#include "Animation.h"
 
 class CSimulation : public ISimulation
 {
 	Skeleton spookyScary;
-	Animation ThirdPersonWalk;
 	float deltaTime;
 	float deltaTime2;
 	virtual void Init() override
