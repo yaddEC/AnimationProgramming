@@ -49,11 +49,12 @@ void Skeleton::Init()
 	}
 
 }
+
+
 void Skeleton::Update()
 {
 		skeletonBones[0].Update();
 }
-
 
 
 void Skeleton::AnimInit()
@@ -76,38 +77,4 @@ void Skeleton::AnimInit()
 		}
 
 	}
-	/*std::vector<Bone> temp = skeletonBones;
-	Update();
-	for (int boneIndex = 0; boneIndex < skeletonBones.size(); ++boneIndex)
-	{
-
-		animation.resize(keyCount);
-		
-		for (size_t i = 0; i < keyCount; i++)
-		{
-			
-			//animation[i].skeletonBones = temp;
-			Matrix4 localMatrix = identity4x4();
-			Matrix4 worldMatrix = identity4x4();
-			localMatrix = localMatrix.CreateTransformMatrixWithQuaternion(skeletonBones[boneIndex].animTransform[i].rot, skeletonBones[boneIndex].animTransform[i].pos, { 1, 1, 1 });
-			
-			animation[i].skeletonBones[boneIndex].localMatrix = skeletonBones[boneIndex].localMatrix * localMatrix;
-
-			if (animation[i].skeletonBones[boneIndex].parent != NULL)
-			{
-				animation[i].skeletonBones[boneIndex].worldMatrix = skeletonBones[boneIndex].parent->worldMatrix * animation[i].skeletonBones[boneIndex].localMatrix;
-			}
-			else
-			{
-				animation[i].skeletonBones[boneIndex].worldMatrix = worldMatrix;
-			}
-			
-		}
-
-		
-	}*/
-
-
-
-
 }

@@ -10,6 +10,8 @@
 class CSimulation : public ISimulation
 {
 	Skeleton spookyScary;
+	std::vector<Matrix4> skinningMatrices;
+	std::vector<Matrix4> indetittys;
 	float deltaTime;
 	float deltaTime2;
 	virtual void Init() override
@@ -22,6 +24,8 @@ class CSimulation : public ISimulation
 		int spineParent = GetSkeletonBoneParentIndex(spine01);
 		const char* spineParentName = GetSkeletonBoneName(spineParent);
 
+		ComputeSkinningMatrices(spookyScary, skinningMatrices);
+		
 		float posX, posY, posZ, quatW, quatX, quatY, quatZ;
 		size_t keyCount = GetAnimKeyCount("ThirdPersonWalk.anim");
 		GetAnimLocalBoneTransform("ThirdPersonWalk.anim", spineParent, keyCount / 2, posX, posY, posZ, quatW, quatX, quatY, quatZ);
@@ -31,14 +35,21 @@ class CSimulation : public ISimulation
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
 
 		deltaTime = 2;
+	}
 
-		for (uint32_t boneIndex = 0; boneIndex < GetSkeletonBoneCount(); ++boneIndex)
+	void ComputeSkinningMatrices(const Skeleton& skeleton, std::vector<Matrix4>& skinningMatrices)
+	{
+		// Clear the skinning matrices vector
+		skinningMatrices.clear();
+
+		// Calculate the skinning matrices for each bone in the skeleton
+		for (const Bone& bone : skeleton.skeletonBones)
 		{
-			float x1, y1, z1, qx1, qy1, qz1, qw1;
-			GetSkeletonBoneLocalBindTransform(static_cast<int>(boneIndex), x1, y1, z1, qw1, qx1, qy1, qz1);
-			GetSkeletonBoneName(boneIndex);
-			printf("%s : % f,% f,% f\n", GetSkeletonBoneName(boneIndex), x1, y1, z1);
+			// Calculate the skinning matrix for the bone
+			Matrix4 skinningMatrix = identity4x4();
 
+			// Add the skinning matrix to the skinning matrices vector
+			skinningMatrices.push_back(skinningMatrix);
 		}
 	}
 
@@ -53,44 +64,46 @@ class CSimulation : public ISimulation
 		// Z axis
 		DrawLine(0, 0, 0, 0, 0, 100, 0, 0, 1);
 			
+		const size_t boneCount = spookyScary.skeletonBones.size();
+		std::vector<float> boneMatrices(boneCount * 16);
 
-			for (uint32_t boneIndex = 0; boneIndex < spookyScary.skeletonBones.size(); ++boneIndex)
+		for (uint32_t boneIndex = 0; boneIndex < spookyScary.skeletonBones.size(); ++boneIndex)
+		{
+			if (spookyScary.skeletonBones[boneIndex].parent != NULL)
 			{
-				if (spookyScary.skeletonBones[boneIndex].parent != NULL)
-				{
-					Matrix4 drawChild = spookyScary.skeletonBones[boneIndex].AnimBones(deltaTime);
-					Matrix4 drawParent = spookyScary.skeletonBones[boneIndex].parent->AnimBones(deltaTime);
-					DrawLine(drawChild.matrixTab4[0][3] + 300,
-							 drawChild.matrixTab4[1][3],
-							 drawChild.matrixTab4[2][3],
-							drawParent.matrixTab4[0][3] + 300, 
-							drawParent.matrixTab4[1][3], 
-							drawParent.matrixTab4[2][3], 
-							 0.5, 
-							 0.5,
-							 0.5);
-				}
+				Matrix4 drawChild = spookyScary.skeletonBones[boneIndex].AnimBones(deltaTime);
+				Matrix4 drawParent = spookyScary.skeletonBones[boneIndex].parent->AnimBones(deltaTime);
+				DrawLine(drawChild .matrixTab4[0][3] + 300,
+						 drawChild .matrixTab4[1][3],
+						 drawChild .matrixTab4[2][3],
+						 drawParent.matrixTab4[0][3] + 300, 
+						 drawParent.matrixTab4[1][3], 
+						 drawParent.matrixTab4[2][3], 
+						 0.5, 
+						 0.5,
+						 0.5);
 
-			}
-		
-			
-			deltaTime2++;
-			if (deltaTime2 > 20)
-			{
-				deltaTime2 = 0;
-				deltaTime++;
-			}
-			if (deltaTime > 30)
-			{
-				deltaTime = 0;
+				Matrix4 boneMatrix = spookyScary.skeletonBones[boneIndex].worldMatrix;
+				boneMatrix.GetTransposeMat4();
+				std::memcpy(&boneMatrices[boneIndex * 16], boneMatrix.matrixTab4, 16 * sizeof(float));
 				
 			}
 
-
-
+		}
 		
-
-
+		SetSkinningPose(boneMatrices.data(), boneCount);
+		
+		deltaTime2++;
+		if (deltaTime2 > 20)
+		{
+			deltaTime2 = 0;
+			deltaTime++;
+		}
+		if (deltaTime > 30)
+		{
+			deltaTime = 0;
+			
+		}
 	}
 };
 
@@ -101,4 +114,8 @@ int main()
 
     return 0;
 }
+
+
+
+
 
