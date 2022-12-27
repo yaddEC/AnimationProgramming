@@ -12,6 +12,8 @@ public:
 	int id_;
 	Matrix4 worldMatrix;
 	Matrix4 localMatrix;
+	Matrix4 invWorldMatrix;
+	Matrix4 invLocalMatrix;
 	Bone* parent;
 	std::vector<Bone*> childrenBone;
 	std::vector<Transform> animTransform;

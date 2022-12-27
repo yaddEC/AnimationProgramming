@@ -980,7 +980,7 @@ Resources
   Resource
   {
     path = "skinning.vs"
-    size = 1158
+    size = 1204
   }
   
   Resource

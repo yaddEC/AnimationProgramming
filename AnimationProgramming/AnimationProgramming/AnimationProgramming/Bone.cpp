@@ -25,10 +25,12 @@ void Bone::Update()
 	if (parent != NULL)
 	{
 		worldMatrix =  parent->worldMatrix * localMatrix;
+		invWorldMatrix = parent->invWorldMatrix * invLocalMatrix;
 	}
 	else
 	{
 		worldMatrix = localMatrix;
+		invWorldMatrix = invLocalMatrix;
 	}
 
 	for (int i = 0; i < childrenBone.size(); i++)

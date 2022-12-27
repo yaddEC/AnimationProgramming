@@ -34,18 +34,22 @@ void Skeleton::Init()
 	{
 		Vector3D pos;
 		Quaternion tempRot;
+		Quaternion invTempRot;
 		float x1, y1, z1, qx1, qy1, qz1, qw1;
 		
 		GetSkeletonBoneLocalBindTransform(skeletonBones[boneIndex].id_, x1, y1, z1, qw1, qx1, qy1, qz1);
 		pos = Vector3D(x1, y1, z1);
 		tempRot = Quaternion(qw1, Vector3D(qx1, qy1, qz1));
-
+		invTempRot = Quaternion(-qw1, Vector3D(qx1, qy1, qz1));
 		Matrix4 localMatrix = identity4x4();
 		Matrix4 worldMatrix = identity4x4();
+		Matrix4 invLocalMatrix = identity4x4();
 		localMatrix = localMatrix.CreateTransformMatrixWithQuaternion(tempRot, pos, { 1, 1, 1 });
-
+		invLocalMatrix = invLocalMatrix.CreateTransformMatrixWithQuaternion(invTempRot, pos*-1, { 1, 1, 1 });
 		skeletonBones[boneIndex].localMatrix = localMatrix;
+		skeletonBones[boneIndex].invLocalMatrix = invLocalMatrix;
 		skeletonBones[boneIndex].worldMatrix = worldMatrix;
+		skeletonBones[boneIndex].invWorldMatrix = worldMatrix;
 	}
 
 }
