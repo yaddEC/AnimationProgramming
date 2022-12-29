@@ -71,12 +71,12 @@ void Skeleton::AnimInit()
 		for (size_t i = 0; i < keyCount; i++)
 		{
 			GetAnimLocalBoneTransform("ThirdPersonWalk.anim", boneIndex, i, skeletonBones[boneIndex].animTransform[i].pos.x,
-				skeletonBones[boneIndex].animTransform[i].pos.y,
-				skeletonBones[boneIndex].animTransform[i].pos.z,
-				skeletonBones[boneIndex].animTransform[i].rot.s,
-				skeletonBones[boneIndex].animTransform[i].rot.v.x,
-				skeletonBones[boneIndex].animTransform[i].rot.v.y,
-				skeletonBones[boneIndex].animTransform[i].rot.v.z);
+			skeletonBones[boneIndex].animTransform[i].pos.y,
+			skeletonBones[boneIndex].animTransform[i].pos.z,
+			skeletonBones[boneIndex].animTransform[i].rot.s,
+			skeletonBones[boneIndex].animTransform[i].rot.v.x,
+			skeletonBones[boneIndex].animTransform[i].rot.v.y,
+			skeletonBones[boneIndex].animTransform[i].rot.v.z);
 
 		}
 

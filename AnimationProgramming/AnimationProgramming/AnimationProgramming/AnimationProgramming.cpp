@@ -9,6 +9,7 @@
 
 class CSimulation : public ISimulation
 {
+	size_t keyCount;
 	Skeleton spookyScary;
 	std::vector<Matrix4> skinningMatrices;
 	std::vector<Matrix4> indetittys;
@@ -16,18 +17,16 @@ class CSimulation : public ISimulation
 	float deltaTime2;
 	virtual void Init() override
 	{
-		
+		keyCount = GetAnimKeyCount("ThirdPersonWalk.anim");
 		spookyScary.Init();
 		spookyScary.AnimInit();
 		spookyScary.Update();
 		int spine01 =	GetSkeletonBoneIndex("spine_01");
 		int spineParent = GetSkeletonBoneParentIndex(spine01);
 		const char* spineParentName = GetSkeletonBoneName(spineParent);
-
-		ComputeSkinningMatrices(spookyScary, skinningMatrices);
 		
 		float posX, posY, posZ, quatW, quatX, quatY, quatZ;
-		size_t keyCount = GetAnimKeyCount("ThirdPersonWalk.anim");
+		
 		GetAnimLocalBoneTransform("ThirdPersonWalk.anim", spineParent, keyCount / 2, posX, posY, posZ, quatW, quatX, quatY, quatZ);
 		
 		printf("Spine parent bone : %s\n", spineParentName);
@@ -37,26 +36,10 @@ class CSimulation : public ISimulation
 		deltaTime = 2;
 	}
 
-	void ComputeSkinningMatrices(const Skeleton& skeleton, std::vector<Matrix4>& skinningMatrices)
-	{
-		// Clear the skinning matrices vector
-		skinningMatrices.clear();
-
-		// Calculate the skinning matrices for each bone in the skeleton
-		for (const Bone& bone : skeleton.skeletonBones)
-		{
-			// Calculate the skinning matrix for the bone
-			Matrix4 skinningMatrix = identity4x4();
-
-			// Add the skinning matrix to the skinning matrices vector
-			skinningMatrices.push_back(skinningMatrix);
-		}
-	}
-
 	void inverse(const Matrix4 in, Matrix4& out) {
-		float a00 = in.matrixTab16[0], a01 =  in.matrixTab16[1], a02 =  in.matrixTab16[2], a03 =  in.matrixTab16[3];
-		float a10 =  in.matrixTab16[4], a11 =  in.matrixTab16[5], a12 =  in.matrixTab16[6], a13 =  in.matrixTab16[7];
-		float a20 =  in.matrixTab16[8], a21 =  in.matrixTab16[9], a22 =  in.matrixTab16[10], a23 =  in.matrixTab16[11];
+		float a00 =  in.matrixTab16[0],  a01 =  in.matrixTab16[1], a02 =  in.matrixTab16[2], a03 =  in.matrixTab16[3];
+		float a10 =  in.matrixTab16[4],  a11 =  in.matrixTab16[5], a12 =  in.matrixTab16[6], a13 =  in.matrixTab16[7];
+		float a20 =  in.matrixTab16[8],  a21 =  in.matrixTab16[9], a22 =  in.matrixTab16[10], a23 =  in.matrixTab16[11];
 		float a30 =  in.matrixTab16[12], a31 =  in.matrixTab16[13], a32 =  in.matrixTab16[14], a33 =  in.matrixTab16[15];
 
 		float b00 = a00 * a11 - a01 * a10;
@@ -99,20 +82,6 @@ class CSimulation : public ISimulation
 		out.matrixTab16[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
 	}
 
-	void SetSkinningPoseV2(std::vector<Matrix4>&bonesTransform)
-	{
-		std::vector<float> toPush;
-		uint32_t boneCount = static_cast<uint32_t>(bonesTransform.size());
-		for (Matrix4 boneTransformation : bonesTransform)
-		{
-			for (uint8_t i = 0; i < 16; ++i)
-			{
-				toPush.push_back(boneTransformation.matrixTab16[i]);
-			}
-		}
-		SetSkinningPose(toPush.data(), boneCount);
-	}
-
 	virtual void Update(float frameTime) override
 	{
 		// X axis
@@ -125,41 +94,32 @@ class CSimulation : public ISimulation
 		DrawLine(0, 0, 0, 0, 0, 100, 0, 0, 1);
 			
 		const size_t boneCount = spookyScary.skeletonBones.size();
-		//std::vector<Matrix4> boneMatrices;;
 		std::vector<float> boneMatrices(boneCount * 16);
-
 
 		for (uint32_t boneIndex = 0; boneIndex < spookyScary.skeletonBones.size(); ++boneIndex)
 		{
 			Matrix4 drawChild = spookyScary.skeletonBones[boneIndex].AnimBones(deltaTime);
 			Matrix4 boneMatrix;
 			inverse(spookyScary.skeletonBones[boneIndex].worldMatrix, boneMatrix);
-			boneMatrix = drawChild * boneMatrix;
-			//boneMatrix = drawChild * spookyScary.skeletonBones[boneIndex].invWorldMatrix;
-			//boneMatrix.GetTransposeMat4();
-			//boneMatrices.push_back(boneMatrix);
+			boneMatrix = boneMatrix.GetTransposeMat4() * drawChild.GetTransposeMat4();
+
 			std::memcpy(&boneMatrices[boneIndex * 16], boneMatrix.matrixTab4, 16 * sizeof(float));
 			if (spookyScary.skeletonBones[boneIndex].parent != NULL)
 			{
-
 				Matrix4 drawParent = spookyScary.skeletonBones[boneIndex].parent->AnimBones(deltaTime);
-				DrawLine(drawChild .matrixTab4[0][3] ,
+				DrawLine(drawChild .matrixTab4[0][3] - 100,
 						 drawChild .matrixTab4[1][3],
 						 drawChild .matrixTab4[2][3],
-						 drawParent.matrixTab4[0][3] , 
+						 drawParent.matrixTab4[0][3] - 100, 
 						 drawParent.matrixTab4[1][3], 
 						 drawParent.matrixTab4[2][3], 
 						 0.5, 
 						 0.5,
 						 0.5);
-
-
-				
 			}
 
 		}
-		
-		//SetSkinningPoseV2(boneMatrices);
+
 		SetSkinningPose(boneMatrices.data(), boneCount);
 		
 		deltaTime2++;
@@ -168,7 +128,7 @@ class CSimulation : public ISimulation
 			deltaTime2 = 0;
 			deltaTime++;
 		}
-		if (deltaTime > 30)
+		if (deltaTime > keyCount - 1)
 		{
 			deltaTime = 0;
 			
