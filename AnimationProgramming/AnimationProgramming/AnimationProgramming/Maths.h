@@ -198,6 +198,8 @@ namespace Math
             Matrix4 GetInvertibleMat4();
             Matrix4 GetProjection(const float& fov, const float& n, const float& f);
 
+            void inverse(const Matrix4 in, Matrix4& out);
+
             // Operators
             Matrix4 operator*(const Matrix4& mat1);
             Vector4D operator*(const Vector4D& vec1);
@@ -324,14 +326,13 @@ namespace Math
     
         float edgeFunction(const Vector3D& a, const Vector3D& b, const Vector3D& c);
         float Lerp(float a, float b, float t);
-
+        Quaternion Slerp(Quaternion q1, Quaternion q2, float t);
+        float DotVec1xVec2(Quaternion q1, Quaternion q2);
+        
     //==================== 
 }
 
 using namespace Math;
-
-
-
 
 Matrix3 operator*(const Matrix3& a, const Matrix3& b);
 Matrix3 operator*(const Matrix3& a, const float b);

@@ -562,7 +562,6 @@ using namespace Math;
         return matrix;
     }
 
-
     Matrix4 Matrix4::GetInvertibleMat4()
     {
         return (this->GetAdjugateMat4().GetTransposeMat4() * (1 / GetDeterminantMat4(*this)));
@@ -580,6 +579,53 @@ using namespace Math;
             {0.f, 0.f, -1.f, 0.f},
         };
         return projectionMatrix;
+    }
+
+    void Matrix4::inverse(const Matrix4 in, Matrix4& out)
+    {
+        float a00 = in.matrixTab16[0],  a01 = in.matrixTab16[1],  a02 = in.matrixTab16[2],  a03 = in.matrixTab16[3];
+        float a10 = in.matrixTab16[4],  a11 = in.matrixTab16[5],  a12 = in.matrixTab16[6],  a13 = in.matrixTab16[7];
+        float a20 = in.matrixTab16[8],  a21 = in.matrixTab16[9],  a22 = in.matrixTab16[10], a23 = in.matrixTab16[11];
+        float a30 = in.matrixTab16[12], a31 = in.matrixTab16[13], a32 = in.matrixTab16[14], a33 = in.matrixTab16[15];
+
+        float b00 = a00 * a11 - a01 * a10;
+        float b01 = a00 * a12 - a02 * a10;
+        float b02 = a00 * a13 - a03 * a10;
+        float b03 = a01 * a12 - a02 * a11;
+        float b04 = a01 * a13 - a03 * a11;
+        float b05 = a02 * a13 - a03 * a12;
+        float b06 = a20 * a31 - a21 * a30;
+        float b07 = a20 * a32 - a22 * a30;
+        float b08 = a20 * a33 - a23 * a30;
+        float b09 = a21 * a32 - a22 * a31;
+        float b10 = a21 * a33 - a23 * a31;
+        float b11 = a22 * a33 - a23 * a32;
+
+        float det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+        if (std::abs(det) <= std::numeric_limits<float>::epsilon()) {
+            return;
+        }
+
+        det = 1.0f / det;
+
+        out.matrixTab16[0]  = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+        out.matrixTab16[1]  = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+        out.matrixTab16[2]  = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+        out.matrixTab16[3]  = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+        out.matrixTab16[4]  = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+        out.matrixTab16[5]  = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+        out.matrixTab16[6]  = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+
+        out.matrixTab16[7]  = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+        out.matrixTab16[8]  = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+        out.matrixTab16[9]  = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+        out.matrixTab16[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+        out.matrixTab16[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+        out.matrixTab16[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+        out.matrixTab16[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+        out.matrixTab16[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+        out.matrixTab16[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
     }
 
 
@@ -765,21 +811,21 @@ using namespace Math;
     float Math::GetDeterminantMat4(const Matrix4& a)
     {
         return(
-              a.matrixTab4[0][0] * GetDeterminantMat3({ a.matrixTab4[1][1], a.matrixTab4[1][2], a.matrixTab4[1][3] }, 
-                                                      { a.matrixTab4[2][1], a.matrixTab4[2][2], a.matrixTab4[2][3] }, 
-                                                      { a.matrixTab4[3][1], a.matrixTab4[3][2], a.matrixTab4[3][3] })
+                a.matrixTab4[0][0] * GetDeterminantMat3({ a.matrixTab4[1][1], a.matrixTab4[1][2], a.matrixTab4[1][3] }, 
+                                                        { a.matrixTab4[2][1], a.matrixTab4[2][2], a.matrixTab4[2][3] }, 
+                                                        { a.matrixTab4[3][1], a.matrixTab4[3][2], a.matrixTab4[3][3] })
 
-            - a.matrixTab4[0][1] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][2], a.matrixTab4[1][3] }, 
-                                                      { a.matrixTab4[2][0], a.matrixTab4[2][2], a.matrixTab4[2][3] }, 
-                                                      { a.matrixTab4[3][0], a.matrixTab4[3][2], a.matrixTab4[3][3] })
+              - a.matrixTab4[0][1] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][2], a.matrixTab4[1][3] }, 
+                                                        { a.matrixTab4[2][0], a.matrixTab4[2][2], a.matrixTab4[2][3] }, 
+                                                        { a.matrixTab4[3][0], a.matrixTab4[3][2], a.matrixTab4[3][3] })
 
-            + a.matrixTab4[0][2] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][3] }, 
-                                                      { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][3] }, 
-                                                      { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][3] })
+              + a.matrixTab4[0][2] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][3] }, 
+                                                        { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][3] }, 
+                                                        { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][3] })
 
-            - a.matrixTab4[0][3] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][2] }, 
-                                                      { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][2] }, 
-                                                      { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][2] })
+              - a.matrixTab4[0][3] * GetDeterminantMat3({ a.matrixTab4[1][0], a.matrixTab4[1][1], a.matrixTab4[1][2] }, 
+                                                        { a.matrixTab4[2][0], a.matrixTab4[2][1], a.matrixTab4[2][2] }, 
+                                                        { a.matrixTab4[3][0], a.matrixTab4[3][1], a.matrixTab4[3][2] })
             );
     }
 
@@ -798,6 +844,35 @@ using namespace Math;
     {
         return a + t * (b - a);
     }
+
+    Quaternion Math::Slerp(Quaternion q1, Quaternion q2, float t)
+    {
+        float cosHalfTheta = DotVec1xVec2(q1, q2);
+
+        if (std::abs(cosHalfTheta) >= 1.0f)
+        {
+            return q1 * (1.0f - t) + q2 * t;
+        }
+
+        float halfTheta    = std::acos(cosHalfTheta);
+        float sinHalfTheta = std::sqrt(1.0f - cosHalfTheta * cosHalfTheta);
+
+        if (std::abs(sinHalfTheta) < 0.001f)
+        {
+            return q1 * (1.0f - t) + q2 * t;
+        }
+
+        float ratioA = std::sin((1 - t) * halfTheta) / sinHalfTheta;
+        float ratioB = std::sin(t * halfTheta) / sinHalfTheta;
+
+        return q1 * ratioA + q2 * ratioB;
+    }
+
+    float Math::DotVec1xVec2(Quaternion q1, Quaternion q2)
+    {
+        return q1.s * q2.s + q1.v.x * q2.v.x + q1.v.y * q2.v.y + q1.v.z * q2.v.z;
+    }
+
 
 //====================
 
