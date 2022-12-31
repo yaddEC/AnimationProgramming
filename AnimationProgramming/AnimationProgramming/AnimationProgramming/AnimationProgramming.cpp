@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "imgui.h"
 #include "Skeleton.h"
 #include "Maths.h"
 #include "Engine.h"
@@ -12,11 +13,11 @@ class CSimulation : public ISimulation
 	size_t keyCount;
 	Skeleton spookyScary;
 	std::vector<Matrix4> skinningMatrices;
-	std::vector<Matrix4> indetittys;
 	float deltaTime;
 	float deltaTime2;
 	virtual void Init() override
 	{
+		ImGui::SetCurrentContext((ImGuiContext*)GetImGUIContext());
 		keyCount = GetAnimKeyCount("ThirdPersonWalk.anim");
 		spookyScary.Init();
 		spookyScary.AnimInit();
@@ -38,6 +39,8 @@ class CSimulation : public ISimulation
 
 	virtual void Update(float frameTime) override
 	{
+		float fps = ImGui::GetIO().Framerate;
+		ImGui::Text("FPS: %.1f", fps);
 		// X axis
 		DrawLine(0, 0, 0, 100, 0, 0, 1, 0, 0);
 
@@ -76,7 +79,7 @@ class CSimulation : public ISimulation
 		SetSkinningPose(boneMatrices.data(), boneCount);
 		
 		deltaTime2++;
-		if (deltaTime2 > 20)
+		if (deltaTime2 > 3)
 		{
 			deltaTime2 = 0;
 			deltaTime++;

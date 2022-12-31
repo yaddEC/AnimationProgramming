@@ -974,13 +974,13 @@ Resources
   Resource
   {
     path = "skinning.ps"
-    size = 990
+    size = 955
   }
   
   Resource
   {
     path = "skinning.vs"
-    size = 1204
+    size = 1158
   }
   
   Resource
