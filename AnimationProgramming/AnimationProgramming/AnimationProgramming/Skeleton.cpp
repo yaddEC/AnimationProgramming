@@ -57,26 +57,27 @@ void Skeleton::Init()
 
 void Skeleton::Update()
 {
-		skeletonBones[0].Update();
+	skeletonBones[0].Update();
 }
 
 
-void Skeleton::AnimInit()
+void Skeleton::AnimInit(const char* a)
 {
-	size_t keyCount = GetAnimKeyCount("ThirdPersonWalk.anim");
+	size_t keyCount = GetAnimKeyCount(a);
 
 	for (int boneIndex = 0; boneIndex < skeletonBones.size(); boneIndex++)
 	{
 		skeletonBones[boneIndex].animTransform.resize(keyCount);
 		for (size_t i = 0; i < keyCount; i++)
 		{
-			GetAnimLocalBoneTransform("ThirdPersonWalk.anim", boneIndex, i, skeletonBones[boneIndex].animTransform[i].pos.x,
-			skeletonBones[boneIndex].animTransform[i].pos.y,
-			skeletonBones[boneIndex].animTransform[i].pos.z,
-			skeletonBones[boneIndex].animTransform[i].rot.s,
-			skeletonBones[boneIndex].animTransform[i].rot.v.x,
-			skeletonBones[boneIndex].animTransform[i].rot.v.y,
-			skeletonBones[boneIndex].animTransform[i].rot.v.z);
+			GetAnimLocalBoneTransform(a, boneIndex, i, 
+				skeletonBones[boneIndex].animTransform[i].pos.x,
+				skeletonBones[boneIndex].animTransform[i].pos.y,
+				skeletonBones[boneIndex].animTransform[i].pos.z,
+				skeletonBones[boneIndex].animTransform[i].rot.s,
+				skeletonBones[boneIndex].animTransform[i].rot.v.x,
+				skeletonBones[boneIndex].animTransform[i].rot.v.y,
+				skeletonBones[boneIndex].animTransform[i].rot.v.z);
 
 		}
 

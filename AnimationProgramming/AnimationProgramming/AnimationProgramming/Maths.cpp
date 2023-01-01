@@ -847,7 +847,7 @@ using namespace Math;
 
     Quaternion Math::Slerp(Quaternion q1, Quaternion q2, float t)
     {
-        float cosHalfTheta = DotVec1xVec2(q1, q2);
+        float cosHalfTheta = DotQuat1xQuat2(q1, q2);
 
         if (std::abs(cosHalfTheta) >= 1.0f)
         {
@@ -868,7 +868,7 @@ using namespace Math;
         return q1 * ratioA + q2 * ratioB;
     }
 
-    float Math::DotVec1xVec2(Quaternion q1, Quaternion q2)
+    float Math::DotQuat1xQuat2(Quaternion q1, Quaternion q2)
     {
         return q1.s * q2.s + q1.v.x * q2.v.x + q1.v.y * q2.v.y + q1.v.z * q2.v.z;
     }
