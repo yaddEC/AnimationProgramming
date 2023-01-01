@@ -1018,6 +1018,14 @@ Vector3D operator*(const float b, const Vector3D& a)
 
     }
 
+    void Quaternion::Negate()
+    {
+        this->s   = -s;
+        this->v.x = -v.x;
+        this->v.y = -v.y;
+        this->v.z = -v.z;
+    }
+
     Quaternion Quaternion::Conjugate() 
     {
         float scalar       = this->s;

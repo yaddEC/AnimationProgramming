@@ -15,11 +15,15 @@ class CSimulation : public ISimulation
 	Skeleton spookyScaryWalk;
 	Skeleton spookyScaryRun;
 	std::vector<Matrix4> skinningMatrices;
-	float deltaTime;
 	int CurrentkeyCount;
 	int CurrentkeyCount2;
-	float deltaTime2;
-	float deltaTime3;
+	bool  ChangeAnim = true;
+	float deltaTime = 0;
+	float deltaTime2 = 0;
+	float deltaTime3 = 0;
+	float frame = 0.5;
+	float colorWalk[3] = { 0.5, 0.5, 0.5 };
+	float colorRun[3] = { 0, 0.5, 0 };
 	const char* nameAnimWalk = "ThirdPersonWalk.anim";
 	const char* nameAnimRun = "ThirdPersonRun.anim";
 
@@ -55,7 +59,6 @@ class CSimulation : public ISimulation
 		deltaTime = 0;
 		deltaTime3 = 0;
 	}
-	float frame = 0.01; 
 
 	virtual void Update(float frameTime) override
 	{
@@ -64,10 +67,16 @@ class CSimulation : public ISimulation
 		ImGui::Text("CurrentkeyCount: %d", CurrentkeyCount);
 		ImGui::Text("CurrentkeyCount2: %d", CurrentkeyCount2);
 		ImGui::Text("deltaTime: %.01f", deltaTime);
+
 		ImGui::Begin("Debug");
 		ImGui::SliderFloat("Frame", &frame, 0.01, 1);
+		ImGui::Checkbox("Switch Anim", &ChangeAnim);
 		ImGui::End();
 
+		ImGui::Begin("Color");
+		ImGui::ColorEdit3("Color Skelet Walk", colorWalk);
+		ImGui::ColorEdit3("Color Skelet Run", colorRun);
+		ImGui::End();
 
 		// X axis
 		DrawLine(0, 0, 0, 100, 0, 0, 1, 0, 0);
@@ -101,9 +110,9 @@ class CSimulation : public ISimulation
 						 drawParent.matrixTab4[0][3] - 150, 
 						 drawParent.matrixTab4[1][3], 
 						 drawParent.matrixTab4[2][3], 
-						 0.5, 
-						 0.5,
-						 0.5);
+						 colorWalk[0],
+						 colorWalk[1],
+						 colorWalk[2]);
 			}
 		}
 
@@ -119,26 +128,33 @@ class CSimulation : public ISimulation
 			if (spookyScaryRun.skeletonBones[boneIndex].parent != NULL)
 			{
 				Matrix4 drawParent = spookyScaryRun.skeletonBones[boneIndex].parent->AnimBones(CurrentkeyCount2, deltaTime, keyCountRun);
-				DrawLine(drawChild.matrixTab4[0][3] + 150,
-						 drawChild.matrixTab4[1][3],
-						 drawChild.matrixTab4[2][3],
+				DrawLine(drawChild .matrixTab4[0][3] + 150,
+						 drawChild .matrixTab4[1][3],
+						 drawChild .matrixTab4[2][3],
 						 drawParent.matrixTab4[0][3] + 150,
 						 drawParent.matrixTab4[1][3],
 						 drawParent.matrixTab4[2][3],
-						 1,
-						 0.5,
-						 0.6);
+						 colorRun[0],
+						 colorRun[1],
+						 colorRun[2]);
 			}
 		}
 
-		SetSkinningPose(boneMatrices.data(), boneCountWalk);
+		if (ChangeAnim)
+		{
+			SetSkinningPose(boneMatrices.data(), boneCountWalk);
+		}
+		else
+		{
+			SetSkinningPose(boneMatrices2.data(), boneCountRun);
+		}
 		
 		deltaTime+=frame;
 		if (deltaTime > 1)
 		{
 			CurrentkeyCount++;
 			CurrentkeyCount2++;
-			deltaTime =0;
+			deltaTime = 0;
 		}
 		if (CurrentkeyCount2 > keyCountRun - 1)
 		{

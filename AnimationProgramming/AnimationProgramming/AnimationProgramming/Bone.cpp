@@ -6,13 +6,23 @@ Matrix4 Bone::AnimBones(int keyframe, float percent, size_t animSize)
 	Quaternion slerp;
 	if (keyframe == animSize - 1)
 	{
+		slerp = animTransform[keyframe].rot;
+		if (slerp.Dot(animTransform[0].rot) < 0)
+		{
+			slerp.Negate();
+		}
+		slerp = Slerp(slerp, animTransform[0].rot, percent);
 		lerp = PosLerp(animTransform[keyframe].pos, animTransform[0].pos, percent);
-		slerp = Slerp(animTransform[keyframe].rot, animTransform[0].rot, percent);
 	}
 	else
 	{
+		slerp = animTransform[keyframe].rot;
+		if (slerp.Dot(animTransform[keyframe + 1].rot) < 0)
+		{
+			slerp.Negate();
+		}
+		slerp = Slerp(slerp, animTransform[keyframe + 1].rot, percent);
 		lerp = PosLerp(animTransform[keyframe].pos, animTransform[keyframe + 1].pos, percent);
-		slerp = Slerp(animTransform[keyframe].rot, animTransform[keyframe + 1].rot, percent);
 	}
 	Matrix4 localMatrixTemp = localMatrixTemp.CreateTransformMatrixWithQuaternion(slerp, lerp, { 1, 1, 1 });
 	localMatrixTemp = localMatrix * localMatrixTemp;
@@ -22,13 +32,23 @@ Matrix4 Bone::AnimBones(int keyframe, float percent, size_t animSize)
 	{
 		if (keyframe == animSize - 1)
 		{
+			slerp = temp->animTransform[keyframe].rot;
+			if (slerp.Dot(temp->animTransform[0].rot) < 0)
+			{
+				slerp.Negate();
+			}
+			slerp = Slerp(slerp, temp->animTransform[0].rot, percent);
 			lerp = PosLerp(temp->animTransform[keyframe].pos, temp->animTransform[0].pos, percent);
-			slerp = Slerp(temp->animTransform[keyframe].rot, temp->animTransform[0].rot, percent);
 		}
 		else
 		{
+			slerp = temp->animTransform[keyframe].rot;
+			if (slerp.Dot(temp->animTransform[keyframe + 1].rot) < 0)
+			{
+				slerp.Negate();
+			}
+			slerp = Slerp(slerp, temp->animTransform[keyframe + 1].rot, percent);
 			lerp = PosLerp(temp->animTransform[keyframe].pos, temp->animTransform[keyframe + 1].pos, percent);
-			slerp = Slerp(temp->animTransform[keyframe].rot, temp->animTransform[keyframe + 1].rot, percent);
 		}
 		Matrix4 tempMat2;
 		tempMat2 = tempMat2.CreateTransformMatrixWithQuaternion(slerp, lerp, { 1, 1, 1 });

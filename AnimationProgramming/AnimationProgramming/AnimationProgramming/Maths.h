@@ -235,6 +235,7 @@ namespace Math
             void Inverse(Quaternion& q);
             void TransformEulerAnglesToQuaternion(float x, float y, float z);
             void TransformMatrix3nToQuaternion(Matrix3& uMatrix);
+            void Negate();
 
             Quaternion Conjugate();
             Quaternion Inverse();
