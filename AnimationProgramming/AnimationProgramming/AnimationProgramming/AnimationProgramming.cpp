@@ -16,6 +16,8 @@ class CSimulation : public ISimulation
 	Skeleton spookyScaryRun;
 	std::vector<Matrix4> skinningMatrices;
 	float deltaTime;
+	int CurrentkeyCount;
+	int CurrentkeyCount2;
 	float deltaTime2;
 	float deltaTime3;
 	const char* nameAnimWalk = "ThirdPersonWalk.anim";
@@ -23,11 +25,12 @@ class CSimulation : public ISimulation
 
 	virtual void Init() override
 	{
+
 		ImGui::SetCurrentContext((ImGuiContext*)GetImGUIContext());
 		keyCountWalk = GetAnimKeyCount(nameAnimWalk);
 		keyCountRun = GetAnimKeyCount(nameAnimRun);
 
-
+		CurrentkeyCount = 0;
 		spookyScaryWalk.Init();
 		spookyScaryWalk.AnimInit(nameAnimWalk);
 		spookyScaryWalk.Update();
@@ -49,18 +52,20 @@ class CSimulation : public ISimulation
 		printf("Anim key count : %ld\n", keyCountWalk);
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
 
-		deltaTime = 2;
-		deltaTime3 = 2;
+		deltaTime = 0;
+		deltaTime3 = 0;
 	}
-	float frame = 3; 
+	float frame = 0.01; 
 
 	virtual void Update(float frameTime) override
 	{
 		float fps = ImGui::GetIO().Framerate;
 		ImGui::Text("FPS: %.1f", fps);
-
+		ImGui::Text("CurrentkeyCount: %d", CurrentkeyCount);
+		ImGui::Text("CurrentkeyCount2: %d", CurrentkeyCount2);
+		ImGui::Text("deltaTime: %.01f", deltaTime);
 		ImGui::Begin("Debug");
-		ImGui::SliderFloat("Frame", &frame, 0, 7);
+		ImGui::SliderFloat("Frame", &frame, 0.01, 1);
 		ImGui::End();
 
 
@@ -81,15 +86,15 @@ class CSimulation : public ISimulation
 		for (uint32_t boneIndex = 0; boneIndex < spookyScaryWalk.skeletonBones.size(); ++boneIndex)
 		{
 			Matrix4 boneMatrix;
-			Matrix4 drawChild = spookyScaryWalk.skeletonBones[boneIndex].AnimBones(deltaTime);
-			Matrix4 drawChild2 = spookyScaryWalk.skeletonBones[boneIndex].AnimBones(deltaTime);
+			Matrix4 drawChild = spookyScaryWalk.skeletonBones[boneIndex].AnimBones(CurrentkeyCount,deltaTime, keyCountWalk);
+			Matrix4 drawChild2 = spookyScaryWalk.skeletonBones[boneIndex].AnimBones(CurrentkeyCount, deltaTime, keyCountWalk);
 			boneMatrix.inverse(spookyScaryWalk.skeletonBones[boneIndex].worldMatrix, boneMatrix);
 			boneMatrix = boneMatrix.GetTransposeMat4() * drawChild.GetTransposeMat4();
 
 			std::memcpy(&boneMatrices[boneIndex * 16], boneMatrix.matrixTab4, 16 * sizeof(float));
 			if (spookyScaryWalk.skeletonBones[boneIndex].parent != NULL)
 			{
-				Matrix4 drawParent = spookyScaryWalk.skeletonBones[boneIndex].parent->AnimBones(deltaTime);
+				Matrix4 drawParent = spookyScaryWalk.skeletonBones[boneIndex].parent->AnimBones(CurrentkeyCount, deltaTime, keyCountWalk);
 				DrawLine(drawChild .matrixTab4[0][3] - 150,
 						 drawChild .matrixTab4[1][3],
 						 drawChild .matrixTab4[2][3],
@@ -105,15 +110,15 @@ class CSimulation : public ISimulation
 		for (uint32_t boneIndex = 0; boneIndex < spookyScaryRun.skeletonBones.size(); ++boneIndex)
 		{
 			Matrix4 boneMatrix;
-			Matrix4 drawChild = spookyScaryRun.skeletonBones[boneIndex].AnimBones(deltaTime3);
-			Matrix4 drawChild2 = spookyScaryRun.skeletonBones[boneIndex].AnimBones(deltaTime3);
+			Matrix4 drawChild = spookyScaryRun.skeletonBones[boneIndex].AnimBones(CurrentkeyCount2, deltaTime, keyCountRun);
+			Matrix4 drawChild2 = spookyScaryRun.skeletonBones[boneIndex].AnimBones(CurrentkeyCount2, deltaTime, keyCountRun);
 			boneMatrix.inverse(spookyScaryRun.skeletonBones[boneIndex].worldMatrix, boneMatrix);
 			boneMatrix = boneMatrix.GetTransposeMat4() * drawChild.GetTransposeMat4();
 
 			std::memcpy(&boneMatrices2[boneIndex * 16], boneMatrix.matrixTab4, 16 * sizeof(float));
 			if (spookyScaryRun.skeletonBones[boneIndex].parent != NULL)
 			{
-				Matrix4 drawParent = spookyScaryRun.skeletonBones[boneIndex].parent->AnimBones(deltaTime3);
+				Matrix4 drawParent = spookyScaryRun.skeletonBones[boneIndex].parent->AnimBones(CurrentkeyCount2, deltaTime, keyCountRun);
 				DrawLine(drawChild.matrixTab4[0][3] + 150,
 						 drawChild.matrixTab4[1][3],
 						 drawChild.matrixTab4[2][3],
@@ -128,20 +133,20 @@ class CSimulation : public ISimulation
 
 		SetSkinningPose(boneMatrices.data(), boneCountWalk);
 		
-		deltaTime2++;
-		if (deltaTime2 > frame)
+		deltaTime+=frame;
+		if (deltaTime > 1)
 		{
-			deltaTime2 = 0;
-			deltaTime++;
-			deltaTime3++;
+			CurrentkeyCount++;
+			CurrentkeyCount2++;
+			deltaTime =0;
 		}
-		if (deltaTime3 > keyCountRun - 1)
+		if (CurrentkeyCount2 > keyCountRun - 1)
 		{
-			deltaTime3 = 0;
+			CurrentkeyCount2 = 0;
 		}
-		if (deltaTime > keyCountWalk - 1)
+		if (CurrentkeyCount > keyCountWalk - 1)
 		{
-			deltaTime = 0;
+			CurrentkeyCount = 0;
 		}
 		
 	}

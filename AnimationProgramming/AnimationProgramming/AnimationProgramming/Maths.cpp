@@ -844,6 +844,14 @@ using namespace Math;
     {
         return a + t * (b - a);
     }
+    Vector3D Math::PosLerp(Vector3D a, Vector3D b, float t)
+    {
+        Vector3D temp;
+        temp.x = Lerp(a.x, b.x, t);
+        temp.y = Lerp(a.y, b.y, t);
+        temp.z = Lerp(a.z, b.z, t);
+        return temp;
+    }
 
     Quaternion Math::Slerp(Quaternion q1, Quaternion q2, float t)
     {

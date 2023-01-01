@@ -17,6 +17,6 @@ public:
 	Bone* parent;
 	std::vector<Bone*> childrenBone;
 	std::vector<Transform> animTransform;
-	Matrix4 AnimBones(int keyframe);
+	Matrix4 AnimBones(int keyframe, float percent, size_t animSize);
 	void Update();
 };

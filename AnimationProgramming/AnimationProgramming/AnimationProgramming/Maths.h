@@ -326,6 +326,7 @@ namespace Math
     
         float edgeFunction(const Vector3D& a, const Vector3D& b, const Vector3D& c);
         float Lerp(float a, float b, float t);
+        Vector3D PosLerp(Vector3D a, Vector3D b, float t);
         Quaternion Slerp(Quaternion q1, Quaternion q2, float t);
         float DotQuat1xQuat2(Quaternion q1, Quaternion q2);
         
