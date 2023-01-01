@@ -18,6 +18,8 @@ class CSimulation : public ISimulation
 	int CurrentkeyCount;
 	int CurrentkeyCount2;
 	bool  ChangeAnim = true;
+	bool  Pause = false;
+	bool  PlayB = false;
 	float deltaTime = 0;
 	float deltaTime2 = 0;
 	float deltaTime3 = 0;
@@ -25,42 +27,9 @@ class CSimulation : public ISimulation
 	float colorWalk[3] = { 0.5, 0.5, 0.5 };
 	float colorRun[3] = { 0, 0.5, 0 };
 	const char* nameAnimWalk = "ThirdPersonWalk.anim";
-	const char* nameAnimRun = "ThirdPersonRun.anim";
+	const char* nameAnimRun  = "ThirdPersonRun.anim";
 
-	virtual void Init() override
-	{
-
-		ImGui::SetCurrentContext((ImGuiContext*)GetImGUIContext());
-		keyCountWalk = GetAnimKeyCount(nameAnimWalk);
-		keyCountRun = GetAnimKeyCount(nameAnimRun);
-
-		CurrentkeyCount = 0;
-		spookyScaryWalk.Init();
-		spookyScaryWalk.AnimInit(nameAnimWalk);
-		spookyScaryWalk.Update();
-
-		spookyScaryRun.Init();
-		spookyScaryRun.AnimInit(nameAnimRun);
-		spookyScaryRun.Update();
-
-
-		int spine01 =	GetSkeletonBoneIndex("spine_01");
-		int spineParent = GetSkeletonBoneParentIndex(spine01);
-		const char* spineParentName = GetSkeletonBoneName(spineParent);
-		
-		float posX, posY, posZ, quatW, quatX, quatY, quatZ;
-		
-		GetAnimLocalBoneTransform(nameAnimWalk, spineParent, keyCountWalk / 2, posX, posY, posZ, quatW, quatX, quatY, quatZ);
-		
-		printf("Spine parent bone : %s\n", spineParentName);
-		printf("Anim key count : %ld\n", keyCountWalk);
-		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
-
-		deltaTime = 0;
-		deltaTime3 = 0;
-	}
-
-	virtual void Update(float frameTime) override
+	virtual void UpdateImgui()
 	{
 		float fps = ImGui::GetIO().Framerate;
 		ImGui::Text("FPS: %.1f", fps);
@@ -71,22 +40,29 @@ class CSimulation : public ISimulation
 		ImGui::Begin("Debug");
 		ImGui::SliderFloat("Frame", &frame, 0.01, 1);
 		ImGui::Checkbox("Switch Anim", &ChangeAnim);
+		ImGui::Checkbox("Play Backward", &PlayB);
+		ImGui::Checkbox("Pause", &Pause);
+		if (Pause)
+		{
+			if (ImGui::Button("Forward"))
+			{
+				deltaTime += frame;
+			}
+			if (ImGui::Button("Backward"))
+			{
+				deltaTime -= frame;
+			}
+		}
 		ImGui::End();
 
 		ImGui::Begin("Color");
 		ImGui::ColorEdit3("Color Skelet Walk", colorWalk);
 		ImGui::ColorEdit3("Color Skelet Run", colorRun);
 		ImGui::End();
+	}
 
-		// X axis
-		DrawLine(0, 0, 0, 100, 0, 0, 1, 0, 0);
-
-		// Y axis
-		DrawLine(0, 0, 0, 0, 100, 0, 0, 1, 0);
-
-		// Z axis
-		DrawLine(0, 0, 0, 0, 0, 100, 0, 0, 1);
-			
+	virtual void CreateSkeleton()
+	{
 		const size_t boneCountWalk = spookyScaryWalk.skeletonBones.size();
 		const size_t boneCountRun = spookyScaryRun.skeletonBones.size();
 		std::vector<float> boneMatrices(boneCountWalk * 16);
@@ -95,8 +71,7 @@ class CSimulation : public ISimulation
 		for (uint32_t boneIndex = 0; boneIndex < spookyScaryWalk.skeletonBones.size(); ++boneIndex)
 		{
 			Matrix4 boneMatrix;
-			Matrix4 drawChild = spookyScaryWalk.skeletonBones[boneIndex].AnimBones(CurrentkeyCount,deltaTime, keyCountWalk);
-			Matrix4 drawChild2 = spookyScaryWalk.skeletonBones[boneIndex].AnimBones(CurrentkeyCount, deltaTime, keyCountWalk);
+			Matrix4 drawChild = spookyScaryWalk.skeletonBones[boneIndex].AnimBones(CurrentkeyCount, deltaTime, keyCountWalk);
 			boneMatrix.inverse(spookyScaryWalk.skeletonBones[boneIndex].worldMatrix, boneMatrix);
 			boneMatrix = boneMatrix.GetTransposeMat4() * drawChild.GetTransposeMat4();
 
@@ -107,9 +82,9 @@ class CSimulation : public ISimulation
 				DrawLine(drawChild .matrixTab4[0][3] - 150,
 						 drawChild .matrixTab4[1][3],
 						 drawChild .matrixTab4[2][3],
-						 drawParent.matrixTab4[0][3] - 150, 
-						 drawParent.matrixTab4[1][3], 
-						 drawParent.matrixTab4[2][3], 
+						 drawParent.matrixTab4[0][3] - 150,
+						 drawParent.matrixTab4[1][3],
+						 drawParent.matrixTab4[2][3],
 						 colorWalk[0],
 						 colorWalk[1],
 						 colorWalk[2]);
@@ -120,7 +95,6 @@ class CSimulation : public ISimulation
 		{
 			Matrix4 boneMatrix;
 			Matrix4 drawChild = spookyScaryRun.skeletonBones[boneIndex].AnimBones(CurrentkeyCount2, deltaTime, keyCountRun);
-			Matrix4 drawChild2 = spookyScaryRun.skeletonBones[boneIndex].AnimBones(CurrentkeyCount2, deltaTime, keyCountRun);
 			boneMatrix.inverse(spookyScaryRun.skeletonBones[boneIndex].worldMatrix, boneMatrix);
 			boneMatrix = boneMatrix.GetTransposeMat4() * drawChild.GetTransposeMat4();
 
@@ -148,14 +122,24 @@ class CSimulation : public ISimulation
 		{
 			SetSkinningPose(boneMatrices2.data(), boneCountRun);
 		}
-		
-		deltaTime+=frame;
+
+		if (!Pause && !PlayB)
+		{
+			deltaTime += frame;
+		}
+
+		if (!Pause && PlayB)
+		{
+			deltaTime -= frame;
+		}
+
 		if (deltaTime > 1)
 		{
 			CurrentkeyCount++;
 			CurrentkeyCount2++;
 			deltaTime = 0;
 		}
+
 		if (CurrentkeyCount2 > keyCountRun - 1)
 		{
 			CurrentkeyCount2 = 0;
@@ -164,7 +148,65 @@ class CSimulation : public ISimulation
 		{
 			CurrentkeyCount = 0;
 		}
-		
+
+		if (deltaTime < 0)
+		{
+			CurrentkeyCount--;
+			CurrentkeyCount2--;
+			deltaTime = 1;
+
+			if (CurrentkeyCount2 < 0)
+			{
+				CurrentkeyCount2 = keyCountRun - 1;
+			}
+			if (CurrentkeyCount < 0)
+			{
+				CurrentkeyCount = keyCountWalk - 1;
+			}
+		}
+
+		if (CurrentkeyCount2 < 0)
+		{
+			CurrentkeyCount2 = keyCountRun - 1;
+		}
+		if (CurrentkeyCount < 0)
+		{
+			CurrentkeyCount = keyCountWalk - 1;
+		}
+	}
+
+	virtual void Init() override
+	{
+		ImGui::SetCurrentContext((ImGuiContext*)GetImGUIContext());
+		keyCountWalk = GetAnimKeyCount(nameAnimWalk);
+		keyCountRun = GetAnimKeyCount(nameAnimRun);
+
+		CurrentkeyCount = 0;
+		spookyScaryWalk.Init();
+		spookyScaryWalk.AnimInit(nameAnimWalk);
+		spookyScaryWalk.Update();
+
+		spookyScaryRun.Init();
+		spookyScaryRun.AnimInit(nameAnimRun);
+		spookyScaryRun.Update();
+
+		deltaTime = 0;
+		deltaTime3 = 0;
+	}
+
+	virtual void Update(float frameTime) override
+	{
+		// X axis
+		DrawLine(0, 100, 0, 100, 100, 0, 1, 0, 0);
+
+		// Y axis
+		DrawLine(0, 100, 0, 0, 200, 0, 0, 1, 0);
+
+		// Z axis
+		DrawLine(0, 100, 0, 0, 100, 100, 0, 0, 1);
+			
+		UpdateImgui();
+		CreateSkeleton();
 	}
 };
 
