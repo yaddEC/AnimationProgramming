@@ -20,7 +20,7 @@ class CSimulation : public ISimulation
 	bool  ChangeAnim = true;
 	bool  Pause = false;
 	bool  PlayB = false;
-	float deltaTime = 0;
+	float deltaTime  = 0;
 	float deltaTime2 = 0;
 	float deltaTime3 = 0;
 	float frame = 0.5;
